@@ -4,17 +4,17 @@ namespace Spurt.Domain.Player.Commands;
 
 public interface IRegisterPlayer
 {
-    Player Execute(string name);
+    Task<Player> Execute(string name);
 }
 
 public class RegisterPlayer(IAddPlayer addPlayer) : IRegisterPlayer
 {
-    public Player Execute(string name)
+    public async Task<Player> Execute(string name)
     {
         var player = new Player { Name = name };
-        
-        addPlayer.Execute(player);
-        
+
+        await addPlayer.Execute(player);
+
         return player;
     }
 }

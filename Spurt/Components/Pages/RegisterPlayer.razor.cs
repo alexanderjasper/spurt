@@ -20,10 +20,10 @@ public partial class RegisterPlayer(IRegisterPlayer registerPlayer) : ComponentB
         Model ??= new PlayerModel();
     }
 
-    private void Submit()
+    private async Task Submit()
     {
         if (Model == null || string.IsNullOrWhiteSpace(Model.Name)) return;
 
-        var player = registerPlayer.Execute(Model.Name);
+        var player = await registerPlayer.Execute(Model.Name);
     }
 }
