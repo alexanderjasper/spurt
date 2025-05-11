@@ -1,0 +1,19 @@
+@page "/registerplayer"
+@rendermode InteractiveServer
+
+<PageTitle>Spur't | Registrer</PageTitle>
+
+<h1>Registrer</h1>
+
+<EditForm Model="Model" OnValidSubmit="Submit">
+    <div>
+        <label>Dit navn</label>
+    </div>
+    <div>
+        <InputText @bind-Value="Model!.Name"/>
+    </div>
+    <div>
+        <button type="submit">Registrer</button>
+    </div>
+</EditForm>
+
