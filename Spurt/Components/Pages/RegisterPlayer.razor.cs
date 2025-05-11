@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Spurt.Domain.Player.Commands;
 
 namespace Spurt.Components.Pages;
 
-public partial class RegisterPlayer(IRegisterPlayer registerPlayer) : ComponentBase
+public partial class RegisterPlayer(IRegisterPlayer registerPlayer, ILocalStorageService localStorageService)
+    : ComponentBase
 {
     private class PlayerModel
     {
@@ -25,5 +27,7 @@ public partial class RegisterPlayer(IRegisterPlayer registerPlayer) : ComponentB
         if (Model == null || string.IsNullOrWhiteSpace(Model.Name)) return;
 
         var player = await registerPlayer.Execute(Model.Name);
+
+        await localStorageService.SetItemAsync("PlayerId", player.Id);
     }
 }

@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Microsoft.EntityFrameworkCore;
 using Spurt.Components;
 using Spurt.Data;
@@ -25,6 +26,8 @@ builder.Services.Scan(scan => scan
     )
     .AsImplementedInterfaces()
 );
+
+builder.Services.AddBlazoredLocalStorage();
 
 var app = builder.Build();
 
