@@ -8,6 +8,7 @@
 **/.idea/datasources
 **/.idea/dataSources.xml
 **/.idea/dataSources.local.xml
+**/*.DotSettings.user
 
 *.db
 *.db-shm
