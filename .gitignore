@@ -1,0 +1,7 @@
+*/wwwroot/lib
+*/bin
+*/obj
+
+**/.idea/shelf/
+**/.idea/workspace.xml
+**/.idea/projectSettingsUpdater.xml
