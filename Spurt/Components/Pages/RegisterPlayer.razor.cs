@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
+using Spurt.Domain.Player.Commands;
 
 namespace Spurt.Components.Pages;
 
-public partial class RegisterPlayer : ComponentBase
+public partial class RegisterPlayer(IRegisterPlayer registerPlayer) : ComponentBase
 {
     private class PlayerModel
     {
@@ -22,5 +23,7 @@ public partial class RegisterPlayer : ComponentBase
     private void Submit()
     {
         if (Model == null || string.IsNullOrWhiteSpace(Model.Name)) return;
+
+        var player = registerPlayer.Execute(Model.Name);
     }
 }
