@@ -1,6 +1,6 @@
 using Spurt.Data.Commands;
 
-namespace Spurt.Domain.Player.Commands;
+namespace Spurt.Domain.Players.Commands;
 
 public interface IRegisterPlayer
 {

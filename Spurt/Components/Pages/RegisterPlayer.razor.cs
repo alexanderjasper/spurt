@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Spurt.Domain.Player.Commands;
+using Spurt.Domain.Players.Commands;
 
 namespace Spurt.Components.Pages;
 

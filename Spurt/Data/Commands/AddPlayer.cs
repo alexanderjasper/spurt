@@ -1,4 +1,4 @@
-using Spurt.Domain.Player;
+using Spurt.Domain.Players;
 
 namespace Spurt.Data.Commands;
 

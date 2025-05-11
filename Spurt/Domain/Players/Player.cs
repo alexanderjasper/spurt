@@ -1,4 +1,4 @@
-namespace Spurt.Domain.Player;
+namespace Spurt.Domain.Players;
 
 public class Player
 {

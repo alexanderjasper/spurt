@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Spurt.Domain.Player;
+using Spurt.Domain.Players;
 
 namespace Spurt.Data.Queries;
 
