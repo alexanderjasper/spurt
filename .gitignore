@@ -5,3 +5,10 @@
 **/.idea/shelf/
 **/.idea/workspace.xml
 **/.idea/projectSettingsUpdater.xml
+**/.idea/datasources
+**/.idea/dataSources.xml
+**/.idea/dataSources.local.xml
+
+*.db
+*.db-shm
+*.db-wal
