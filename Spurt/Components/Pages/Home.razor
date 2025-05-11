@@ -1,10 +1,13 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
 <h1>Spur't</h1>
 
-<div>
-    <NavLink href="registerplayer" class="btn btn-primary">Start</NavLink>
-</div>
+@if (CurrentPlayer != null)
+{
+    <h2>Velkommen @CurrentPlayer.Name</h2>
+}
+
 
