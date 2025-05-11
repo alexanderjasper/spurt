@@ -6,6 +6,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Register all commands and queries by namespace convention
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<Program>()
+    .AddClasses(classes => classes.Where(type =>
+            type.Namespace != null &&
+            (
+                type.Namespace.Contains("Commands") ||
+                type.Namespace.Contains("Queries")
+            )
+        )
+    )
+    .AsImplementedInterfaces()
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
