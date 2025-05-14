@@ -25,5 +25,7 @@ public partial class Home(
 
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
         if (CurrentPlayer == null) navigationManager.NavigateTo("/registerplayer");
+
+        StateHasChanged();
     }
 }
