@@ -10,7 +10,7 @@ public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
     public async Task<Game> Execute(Guid playerId)
     {
         var player = await getPlayer.Execute(playerId) ??
-                     throw new ArgumentException("Players not found", nameof(playerId));
+                     throw new ArgumentException("Player not found", nameof(playerId));
 
         var game = new Game
         {

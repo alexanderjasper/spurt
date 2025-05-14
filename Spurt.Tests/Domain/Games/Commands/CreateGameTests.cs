@@ -91,7 +91,7 @@ public class CreateGameTests
 
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => createGame.Execute(invalidPlayerId));
 
-        Assert.Contains("Players not found", exception.Message);
+        Assert.Contains("Player not found", exception.Message);
         Assert.Equal("playerId", exception.ParamName);
     }
 
