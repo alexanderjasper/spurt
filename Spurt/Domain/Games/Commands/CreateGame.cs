@@ -3,11 +3,6 @@ using Spurt.Data.Queries;
 
 namespace Spurt.Domain.Games.Commands;
 
-public interface ICreateGame
-{
-    Task<Game> Execute(Guid playerId);
-}
-
 public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
 {
     private static readonly Random Random = new();
@@ -38,4 +33,9 @@ public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
             .Select(_ => chars[Random.Next(chars.Length)])
             .ToArray());
     }
+}
+
+public interface ICreateGame
+{
+    Task<Game> Execute(Guid playerId);
 }

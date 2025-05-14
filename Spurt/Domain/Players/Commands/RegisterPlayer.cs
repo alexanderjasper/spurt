@@ -2,11 +2,6 @@ using Spurt.Data.Commands;
 
 namespace Spurt.Domain.Players.Commands;
 
-public interface IRegisterPlayer
-{
-    Task<Player> Execute(string name);
-}
-
 public class RegisterPlayer(IAddPlayer addPlayer) : IRegisterPlayer
 {
     public async Task<Player> Execute(string name)
@@ -17,4 +12,9 @@ public class RegisterPlayer(IAddPlayer addPlayer) : IRegisterPlayer
 
         return player;
     }
+}
+
+public interface IRegisterPlayer
+{
+    Task<Player> Execute(string name);
 }
