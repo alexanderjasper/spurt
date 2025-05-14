@@ -8,6 +8,15 @@
 @if (CurrentPlayer != null)
 {
     <h2>Velkommen @CurrentPlayer.Name</h2>
+
+    <div class="actions">
+        @if (IsCreatingGame)
+        {
+            <p>Opretter spil...</p>
+        }
+        else
+        {
+            <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
+        }
+    </div>
 }
-
-

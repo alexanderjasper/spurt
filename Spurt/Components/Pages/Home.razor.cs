@@ -1,31 +1,45 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Spurt.Data.Queries;
+using Spurt.Domain.Games.Commands;
 using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
 public partial class Home(
-    ILocalStorageService localStorageService,
-    NavigationManager navigationManager,
-    IGetPlayer getPlayer)
+    IGetPlayer getPlayer,
+    ICreateGame createGame,
+    ILocalStorageService localStorage,
+    NavigationManager navigation)
 {
     private Player? CurrentPlayer { get; set; }
+    private bool IsCreatingGame { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
-        var playerId = await localStorageService.GetItemAsync<Guid?>("PlayerId");
+        var playerId = await localStorage.GetItemAsync<Guid?>("PlayerId");
         if (playerId == null)
         {
-            navigationManager.NavigateTo("/registerplayer");
+            navigation.NavigateTo("/registerplayer");
             return;
         }
 
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
-        if (CurrentPlayer == null) navigationManager.NavigateTo("/registerplayer");
+        if (CurrentPlayer == null) navigation.NavigateTo("/registerplayer");
 
         StateHasChanged();
+    }
+
+    private async Task CreateNewGame()
+    {
+        if (CurrentPlayer == null) return;
+
+        IsCreatingGame = true;
+        StateHasChanged();
+
+        var game = await createGame.Execute(CurrentPlayer.Id);
+        navigation.NavigateTo($"/game/{game.Code}");
     }
 }

@@ -1,0 +1,20 @@
+@page "/game/{Code}"
+@rendermode InteractiveServer
+
+<PageTitle>Spur't | Spil</PageTitle>
+
+<h1>Spur't Spil</h1>
+
+@if (CurrentGame != null)
+{
+    <div>
+        <h2>Spil Oprettet!</h2>
+        <p>Din spilkode er: </p>
+        <h2>@Code</h2>
+        <p>Del denne kode med andre spillere, så de kan deltage i dit spil.</p>
+    </div>
+}
+else
+{
+    <p>Henter spil information...</p>
+} 
