@@ -1,24 +1,30 @@
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
+using Spurt.Domain.Players;
 
 namespace Spurt.Domain.Games.Commands;
 
-public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
+public class CreateGame(IAddGame addGame, IGetUser getUser) : ICreateGame
 {
     private static readonly Random Random = new();
 
-    public async Task<Game> Execute(Guid playerId)
+    public async Task<Game> Execute(Guid userId)
     {
-        var player = await getPlayer.Execute(playerId) ??
-                     throw new ArgumentException("Player not found", nameof(playerId));
+        var user = await getUser.Execute(userId) ??
+                   throw new ArgumentException("User not found", nameof(userId));
 
-        player.IsCreator = true;
-        
         var game = new Game
         {
             Code = GenerateUniqueCode(),
         };
-
+        var player = new Player
+        {
+            IsCreator = true,
+            User = user,
+            UserId = userId,
+            Game = game,
+            GameId = game.Id,
+        };
         game.Players.Add(player);
 
         await addGame.Execute(game);
@@ -37,5 +43,5 @@ public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
 
 public interface ICreateGame
 {
-    Task<Game> Execute(Guid playerId);
+    Task<Game> Execute(Guid userId);
 }

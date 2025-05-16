@@ -11,10 +11,9 @@ public class Game
 
     public void ValidateCreator()
     {
-        int creatorCount = Players.Count(p => p.IsCreator);
+        var creatorCount = Players.Count(p => p.IsCreator);
         if (creatorCount != 1)
-        {
-            throw new InvalidOperationException($"Game must have exactly one player marked as Creator. Found {creatorCount}.");
-        }
+            throw new InvalidOperationException(
+                $"Game must have exactly one player marked as Creator. Found {creatorCount}.");
     }
 }

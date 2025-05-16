@@ -5,6 +5,7 @@ using Spurt.Data.Queries;
 using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
 using Spurt.Domain.Players;
+using Spurt.Domain.Users;
 
 // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
 
@@ -12,67 +13,84 @@ namespace Spurt.Tests.Domain.Games.Commands;
 
 public class JoinGameTests
 {
-    private readonly Guid _playerId = Guid.NewGuid();
-    private readonly Guid _creatorId = Guid.NewGuid();
+    private readonly Guid _userId = Guid.NewGuid();
+    private readonly Guid _creatorUserId = Guid.NewGuid();
     private const string GameCode = "ABC123";
-    private readonly Player _player;
-    private readonly Player _creator;
+    private readonly User _user;
+    private readonly User _creatorUser;
+    private readonly Player _creatorPlayer;
     private readonly Game _game;
     private readonly IGetGame _getGame;
-    private readonly IGetPlayer _getPlayer;
-    private readonly IUpdateGame _updateGame;
+    private readonly IGetUser _getUser;
+    private readonly IAddPlayer _addPlayer;
     private readonly IHubContext<GameHub> _hubContext;
     private readonly JoinGame _joinGame;
 
     public JoinGameTests()
     {
-        _player = new Player { Id = _playerId, Name = "Test Player" };
-        _creator = new Player { Id = _creatorId, Name = "Creator", IsCreator = true };
+        _user = new User { Id = _userId, Name = "Test User" };
+        _creatorUser = new User { Id = _creatorUserId, Name = "Creator User" };
 
         _game = new Game
         {
             Id = Guid.NewGuid(),
             Code = GameCode,
-            Players = new List<Player> { _creator },
+            Players = [],
         };
+
+        _creatorPlayer = new Player
+        {
+            Id = Guid.NewGuid(),
+            UserId = _creatorUserId,
+            User = _creatorUser,
+            GameId = _game.Id,
+            Game = _game,
+            IsCreator = true,
+        };
+
+        _game.Players.Add(_creatorPlayer);
 
         _getGame = Substitute.For<IGetGame>();
         _getGame.Execute(GameCode).Returns(_game);
 
-        _getPlayer = Substitute.For<IGetPlayer>();
-        _getPlayer.Execute(_playerId).Returns(_player);
+        _getUser = Substitute.For<IGetUser>();
+        _getUser.Execute(_userId).Returns(_user);
+        _getUser.Execute(_creatorUserId).Returns(_creatorUser);
 
-        _updateGame = Substitute.For<IUpdateGame>();
+        _addPlayer = Substitute.For<IAddPlayer>();
         _hubContext = Substitute.For<IHubContext<GameHub>>();
 
-        _joinGame = new JoinGame(_getGame, _getPlayer, _updateGame, _hubContext);
+        _joinGame = new JoinGame(_getGame, _getUser, _addPlayer, _hubContext);
     }
 
     [Fact]
-    public async Task Execute_WithValidGameCodeAndPlayerId_AddsPlayerToGame()
+    public async Task Execute_WithValidGameCodeAndUserId_CreatesPlayerAndAddsToDB()
     {
-        var result = await _joinGame.Execute(GameCode, _playerId);
+        var result = await _joinGame.Execute(GameCode, _userId);
 
-        Assert.Contains(_player, result.Players);
-    }
-
-    [Fact]
-    public async Task Execute_WithValidGameCodeAndPlayerId_CallsUpdateGame()
-    {
-        var result = await _joinGame.Execute(GameCode, _playerId);
-
-        await _updateGame.Received(1).Execute(Arg.Is<Game>(g => g.Id == _game.Id));
-    }
-
-    [Fact]
-    public async Task Execute_WithPlayerAlreadyInGame_ReturnsGameWithoutAddingPlayerAgain()
-    {
-        _game.Players.Add(_player);
-
-        var result = await _joinGame.Execute(GameCode, _playerId);
+        await _addPlayer.Received(1).Execute(Arg.Is<Player>(p =>
+            p.UserId == _userId));
 
         Assert.Equal(2, result.Players.Count);
-        await _updateGame.DidNotReceive().Execute(Arg.Any<Game>());
+    }
+
+    [Fact]
+    public async Task Execute_WithUserAlreadyHavingPlayerInGame_ReturnsGameWithoutAddingPlayerAgain()
+    {
+        var existingPlayer = new Player
+        {
+            Id = Guid.NewGuid(),
+            UserId = _userId,
+            User = _user,
+            GameId = _game.Id,
+            Game = _game,
+        };
+        _game.Players.Add(existingPlayer);
+
+        var result = await _joinGame.Execute(GameCode, _userId);
+
+        Assert.Equal(2, result.Players.Count);
+        await _addPlayer.DidNotReceive().Execute(Arg.Any<Player>());
     }
 
     [Fact]
@@ -82,22 +100,22 @@ public class JoinGameTests
         _getGame.Execute(invalidGameCode).Returns((Game?)null);
 
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            _joinGame.Execute(invalidGameCode, _playerId));
+            _joinGame.Execute(invalidGameCode, _userId));
 
         Assert.Contains("Game not found", exception.Message);
         Assert.Equal("gameCode", exception.ParamName);
     }
 
     [Fact]
-    public async Task Execute_WithInvalidPlayerId_ThrowsArgumentException()
+    public async Task Execute_WithInvalidUserId_ThrowsArgumentException()
     {
-        var invalidPlayerId = Guid.NewGuid();
-        _getPlayer.Execute(invalidPlayerId).Returns((Player?)null);
+        var invalidUserId = Guid.NewGuid();
+        _getUser.Execute(invalidUserId).Returns((User?)null);
 
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-            _joinGame.Execute(GameCode, invalidPlayerId));
+            _joinGame.Execute(GameCode, invalidUserId));
 
-        Assert.Contains("Player not found", exception.Message);
-        Assert.Equal("playerId", exception.ParamName);
+        Assert.Contains("User not found", exception.Message);
+        Assert.Equal("userId", exception.ParamName);
     }
 }

@@ -20,10 +20,10 @@ public partial class Game(
     {
         if (!firstRender) return;
 
-        var playerId = await localStorage.GetItemAsync<Guid?>("PlayerId");
-        if (playerId == null)
+        var userId = await localStorage.GetItemAsync<Guid?>("UserId");
+        if (userId == null)
         {
-            navigation.NavigateTo("/registerplayer");
+            navigation.NavigateTo("/register");
             return;
         }
 

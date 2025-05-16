@@ -9,6 +9,7 @@ public class GetGame(AppDbContext dbContext) : IGetGame
     {
         return await dbContext.Games
             .Include(g => g.Players)
+            .ThenInclude(p => p.User)
             .FirstOrDefaultAsync(g => g.Code == code);
     }
 }

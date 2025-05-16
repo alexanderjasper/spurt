@@ -2,19 +2,19 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Spurt.Data.Queries;
 using Spurt.Domain.Games.Commands;
-using Spurt.Domain.Players;
+using Spurt.Domain.Users;
 
 namespace Spurt.Components.Pages;
 
 public partial class Home(
-    IGetPlayer getPlayer,
+    IGetUser getUser,
     IGetActiveGame getActiveGame,
     ICreateGame createGame,
     IJoinGame joinGame,
     ILocalStorageService localStorage,
     NavigationManager navigation)
 {
-    private Player? CurrentPlayer { get; set; }
+    private User? CurrentUser { get; set; }
     private bool IsLoading { get; set; }
     private string GameCode { get; set; } = string.Empty;
 
@@ -22,41 +22,41 @@ public partial class Home(
     {
         if (!firstRender) return;
 
-        if (!await LoadCurrentPlayer())
+        if (!await LoadCurrentUser())
             return;
 
         await CheckForActiveGame();
     }
 
-    private async Task<bool> LoadCurrentPlayer()
+    private async Task<bool> LoadCurrentUser()
     {
-        var playerId = await localStorage.GetItemAsync<Guid?>("PlayerId");
-        if (playerId == null)
+        var userId = await localStorage.GetItemAsync<Guid?>("UserId");
+        if (userId == null)
         {
-            NavigateToPlayerRegistration();
+            NavigateToUserRegistration();
             return false;
         }
 
-        CurrentPlayer = await getPlayer.Execute(playerId.Value);
-        if (CurrentPlayer == null)
+        CurrentUser = await getUser.Execute(userId.Value);
+        if (CurrentUser == null)
         {
-            NavigateToPlayerRegistration();
+            NavigateToUserRegistration();
             return false;
         }
 
         return true;
     }
 
-    private void NavigateToPlayerRegistration()
+    private void NavigateToUserRegistration()
     {
-        navigation.NavigateTo("/registerplayer");
+        navigation.NavigateTo("/register");
     }
 
     private async Task CheckForActiveGame()
     {
         SetLoading(true);
 
-        var activeGame = await getActiveGame.Execute(CurrentPlayer!.Id);
+        var activeGame = await getActiveGame.Execute(CurrentUser!.Id);
         if (activeGame != null)
         {
             NavigateToGame(activeGame);
@@ -79,23 +79,23 @@ public partial class Home(
 
     private async Task CreateNewGame()
     {
-        if (CurrentPlayer == null) return;
+        if (CurrentUser == null) return;
 
         SetLoading(true);
 
-        var game = await createGame.Execute(CurrentPlayer.Id);
+        var game = await createGame.Execute(CurrentUser.Id);
         NavigateToGame(game);
     }
 
     private async Task JoinGame()
     {
-        if (CurrentPlayer == null || string.IsNullOrWhiteSpace(GameCode)) return;
+        if (CurrentUser == null || string.IsNullOrWhiteSpace(GameCode)) return;
 
         SetLoading(true);
 
         try
         {
-            var game = await joinGame.Execute(GameCode.Trim().ToUpper(), CurrentPlayer.Id);
+            var game = await joinGame.Execute(GameCode.Trim().ToUpper(), CurrentUser.Id);
             NavigateToGame(game);
         }
         catch

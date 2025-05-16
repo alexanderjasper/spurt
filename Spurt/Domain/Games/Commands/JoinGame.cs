@@ -1,29 +1,37 @@
 using Microsoft.AspNetCore.SignalR;
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
+using Spurt.Domain.Players;
 
 namespace Spurt.Domain.Games.Commands;
 
 public class JoinGame(
     IGetGame getGame,
-    IGetPlayer getPlayer,
-    IUpdateGame updateGame,
+    IGetUser getUser,
+    IAddPlayer addPlayer,
     IHubContext<GameHub> hubContext) : IJoinGame
 {
-    public async Task<Game> Execute(string gameCode, Guid playerId)
+    public async Task<Game> Execute(string gameCode, Guid userId)
     {
         var game = await getGame.Execute(gameCode) ??
                    throw new ArgumentException("Game not found", nameof(gameCode));
 
-        var player = await getPlayer.Execute(playerId) ??
-                     throw new ArgumentException("Player not found", nameof(playerId));
+        var user = await getUser.Execute(userId) ??
+                   throw new ArgumentException("User not found", nameof(userId));
 
-        if (game.Players.Any(p => p.Id == playerId)) return game;
+        var existingPlayer = game.Players.FirstOrDefault(p => p.UserId == userId);
+        if (existingPlayer != null) return game;
 
-        game.Players.Add(player);
+        var player = new Player
+        {
+            User = user,
+            UserId = userId,
+            Game = game,
+            GameId = game.Id,
+        };
 
-        await updateGame.Execute(game);
-        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.PlayerJoined, player.Name);
+        await addPlayer.Execute(player);
+        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.PlayerJoined, user.Name);
 
         return game;
     }
@@ -31,5 +39,5 @@ public class JoinGame(
 
 public interface IJoinGame
 {
-    Task<Game> Execute(string gameCode, Guid playerId);
+    Task<Game> Execute(string gameCode, Guid userId);
 }

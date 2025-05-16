@@ -3,65 +3,72 @@ using Spurt.Data.Commands;
 using Spurt.Data.Queries;
 using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
-using Spurt.Domain.Players;
-using Spurt.Domain.Players.Commands;
+using Spurt.Domain.Users;
+using Spurt.Domain.Users.Commands;
+// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
 
 namespace Spurt.Tests.Integration;
 
 public class SignupAndGameCreationTests
 {
     // Real implementations
-    private readonly IRegisterPlayer _registerPlayer;
+    private readonly IRegisterUser _registerUser;
     private readonly ICreateGame _createGame;
 
     // Mocked data layer
+    private readonly IAddUser _addUser;
     private readonly IAddPlayer _addPlayer;
     private readonly IAddGame _addGame;
-    private readonly IGetPlayer _getPlayer;
+    private readonly IGetUser _getUser;
 
-    private readonly Player _testPlayer;
-    private readonly Guid _playerId = Guid.NewGuid();
+    private readonly User _testUser;
+    private readonly Guid _userId = Guid.NewGuid();
 
     public SignupAndGameCreationTests()
     {
+        _addUser = Substitute.For<IAddUser>();
         _addPlayer = Substitute.For<IAddPlayer>();
         _addGame = Substitute.For<IAddGame>();
-        _getPlayer = Substitute.For<IGetPlayer>();
+        _getUser = Substitute.For<IGetUser>();
 
-        _testPlayer = new Player
+        _testUser = new User
         {
-            Id = _playerId,
-            Name = "Test Player",
+            Id = _userId,
+            Name = "Test User",
         };
 
         // Configure data layer mocks
-        _getPlayer.Execute(_playerId).Returns(_testPlayer);
+        _getUser.Execute(_userId).Returns(_testUser);
 
         // Create real implementations with mocked dependencies
-        _registerPlayer = new RegisterPlayer(_addPlayer);
-        _createGame = new CreateGame(_addGame, _getPlayer);
+        _registerUser = new RegisterUser(_addUser);
+        _createGame = new CreateGame(_addGame, _getUser);
     }
 
     [Fact]
     public async Task CompleteUserJourney_RegisterAndCreateGame_Success()
     {
-        // Step 1: Register a new player
-        var playerName = "Test Player";
-        var player = await _registerPlayer.Execute(playerName);
+        // Step 1: Register a new user
+        var userName = "Test User";
+        var user = await _registerUser.Execute(userName);
 
-        // Verify player was created with the correct name
-        Assert.NotNull(player);
-        Assert.Equal(playerName, player.Name);
+        // Verify user was created with the correct name
+        Assert.NotNull(user);
+        Assert.Equal(userName, user.Name);
 
-        // Verify AddPlayer was called with the correct player
-        await _addPlayer.Received(1).Execute(Arg.Is<Player>(p => p.Name == playerName));
+        // Verify AddUser was called with the correct user
+        await _addUser.Received(1).Execute(Arg.Is<User>(u => u.Name == userName));
 
-        // Configure GetPlayer mock to return the newly registered player
-        // Note: In a real scenario, the player ID is assigned by the database
-        _getPlayer.Execute(player.Id).Returns(player);
+        // Configure GetUser mock to return the newly registered user
+        _getUser.Execute(user.Id).Returns(user);
 
-        // Step 2: Create a new game with the player
-        var game = await _createGame.Execute(player.Id);
+        // Step 2: Create a new game with the user
+        var game = await _createGame.Execute(user.Id);
+
+        // Verify a Player was created for the User (via AddGame now, not AddPlayer)
+        Assert.Single(game.Players);
+        Assert.Equal(user.Id, game.Players[0].UserId);
+        Assert.True(game.Players[0].IsCreator);
 
         // Verify AddGame was called 
         await _addGame.Received(1).Execute(Arg.Any<Game>());
@@ -69,9 +76,8 @@ public class SignupAndGameCreationTests
         // Verify game properties
         Assert.NotNull(game);
         Assert.Equal(6, game.Code.Length); // Game code should be 6 characters
-        Assert.True(player.IsCreator);
-
-        // Verify player is added to game's players list
-        Assert.Contains(player, game.Players);
+        Assert.Single(game.Players);
+        Assert.True(game.Players[0].IsCreator);
+        Assert.Equal(user.Id, game.Players[0].UserId);
     }
 }

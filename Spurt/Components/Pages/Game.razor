@@ -17,7 +17,7 @@
                 @foreach (var player in CurrentGame.Players)
                 {
                     <li>
-                        @player.Name
+                        @player.User.Name
                         @if (player.IsCreator)
                         {
                             <span>(Vært)</span>
