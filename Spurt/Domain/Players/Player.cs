@@ -1,5 +1,6 @@
 using Spurt.Domain.Games;
 using Spurt.Domain.Users;
+using Spurt.Domain.Categories;
 
 namespace Spurt.Domain.Players;
 
@@ -11,4 +12,5 @@ public class Player
     public required Guid UserId { get; set; }
     public required Game Game { get; set; }
     public required Guid GameId { get; set; }
+    public Category? Category { get; set; }
 }

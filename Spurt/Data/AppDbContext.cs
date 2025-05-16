@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Spurt.Domain.Games;
 using Spurt.Domain.Players;
 using Spurt.Domain.Users;
+using Spurt.Domain.Categories;
 
 namespace Spurt.Data;
 
@@ -10,6 +11,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Player> Players { get; set; } = null!;
     public DbSet<Game> Games { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<Clue> Clues { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +31,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .WithMany(g => g.Players)
             .HasForeignKey(p => p.GameId)
             .IsRequired();
+        modelBuilder.Entity<Player>()
+            .HasOne(p => p.Category)
+            .WithOne(c => c.Player)
+            .HasForeignKey<Category>(c => c.PlayerId);
 
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
@@ -46,6 +53,30 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasMany(g => g.Players)
             .WithOne(p => p.Game)
             .HasForeignKey(p => p.GameId);
+
+        modelBuilder.Entity<Category>()
+            .HasKey(c => c.Id);
+        modelBuilder.Entity<Category>()
+            .Property(c => c.Title)
+            .IsRequired()
+            .HasMaxLength(100);
+        modelBuilder.Entity<Category>()
+            .HasMany(c => c.Clues)
+            .WithOne(q => q.Category)
+            .HasForeignKey(q => q.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Clue>()
+            .HasKey(q => q.Id);
+        modelBuilder.Entity<Clue>()
+            .Property(q => q.Answer)
+            .IsRequired();
+        modelBuilder.Entity<Clue>()
+            .Property(q => q.Question)
+            .IsRequired();
+        modelBuilder.Entity<Clue>()
+            .Property(q => q.PointValue)
+            .IsRequired();
 
         base.OnModelCreating(modelBuilder);
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Spurt.Data.Queries;
 using Spurt.Domain.Games;
+using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
@@ -15,13 +16,17 @@ public partial class Game(
 
     private Domain.Games.Game? CurrentGame { get; set; }
     private HubConnection? _hubConnection;
+    private Guid? _currentUserId;
+    private Player? _currentPlayer;
+    private bool _categorySubmitted;
+    private List<string> _categorySubmissions = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
-        var userId = await localStorage.GetItemAsync<Guid?>("UserId");
-        if (userId == null)
+        _currentUserId = await localStorage.GetItemAsync<Guid?>("UserId");
+        if (_currentUserId == null)
         {
             navigation.NavigateTo("/register");
             return;
@@ -39,6 +44,14 @@ public partial class Game(
             .Build();
 
         _hubConnection.On<string>(GameHub.Events.PlayerJoined, async _ => await LoadGameData());
+        _hubConnection.On<string>(GameHub.Events.CategorySubmitted, async playerName =>
+        {
+            if (!_categorySubmissions.Contains(playerName))
+            {
+                _categorySubmissions.Add(playerName);
+                await InvokeAsync(StateHasChanged);
+            }
+        });
 
         try
         {
@@ -61,7 +74,20 @@ public partial class Game(
             return;
         }
 
+        _currentPlayer = CurrentGame.Players.FirstOrDefault(p => p.UserId == _currentUserId);
+        if (_currentPlayer != null) _categorySubmitted = _currentPlayer.Category?.IsSubmitted ?? false;
+
+        _categorySubmissions = CurrentGame.Players
+            .Where(p => p.Category?.IsSubmitted ?? false)
+            .Select(p => p.User.Name)
+            .ToList();
+
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnCategorySaved()
+    {
+        await LoadGameData();
     }
 
     public async ValueTask DisposeAsync()

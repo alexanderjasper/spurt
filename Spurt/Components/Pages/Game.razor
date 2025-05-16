@@ -26,6 +26,37 @@
                 }
             </ul>
         </div>
+
+        @if (_currentPlayer != null)
+        {
+            <div>
+                <h3>Din kategori</h3>
+                @if (_categorySubmitted)
+                {
+                    <p>Din kategori er indsendt!</p>
+                }
+                else
+                {
+                    <CategoryEditor 
+                        PlayerId="@_currentPlayer.Id" 
+                        ExistingCategory="@_currentPlayer.Category" 
+                        OnCategorySaved="OnCategorySaved" />
+                }
+            </div>
+        }
+
+        @if (_categorySubmissions.Any())
+        {
+            <div>
+                <h3>Indsendte kategorier</h3>
+                <ul>
+                    @foreach (var playerName in _categorySubmissions)
+                    {
+                        <li>@playerName</li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
 }
 else
