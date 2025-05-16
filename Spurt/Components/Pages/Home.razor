@@ -14,9 +14,23 @@
         {
             <p>Opretter spil...</p>
         }
+        else if (IsJoiningGame)
+        {
+            <p>Tilslutter spil...</p>
+        }
         else
         {
-            <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
+            <div>
+                <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
+            </div>
+
+            <div>
+                <h3>Eller deltag i et eksisterende spil</h3>
+                <div>
+                    <input @bind="GameCode" placeholder="Indtast spilkode"/>
+                    <button @onclick="JoinGame" class="button">Deltag</button>
+                </div>
+            </div>
         }
     </div>
 }
