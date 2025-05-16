@@ -13,6 +13,8 @@ public class GameHub : Hub
     {
         public const string PlayerJoined = nameof(PlayerJoined);
         public const string CategorySubmitted = nameof(CategorySubmitted);
+        public const string GameStarted = nameof(GameStarted);
+        public const string ClueSelected = nameof(ClueSelected);
     }
 
     public async Task JoinGameGroup(string gameCode)

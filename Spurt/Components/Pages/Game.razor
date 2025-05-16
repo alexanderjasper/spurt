@@ -27,34 +27,88 @@
             </ul>
         </div>
 
-        @if (_currentPlayer != null)
+        @if (CurrentGame.State == Domain.Games.GameState.WaitingForCategories)
+        {
+            @if (_currentPlayer != null)
+            {
+                <div>
+                    <h3>Din kategori</h3>
+                    @if (_categorySubmitted)
+                    {
+                        <p>Din kategori er indsendt!</p>
+                    }
+                    else
+                    {
+                        <CategoryEditor 
+                            PlayerId="@_currentPlayer.Id" 
+                            ExistingCategory="@_currentPlayer.Category" 
+                            OnCategorySaved="OnCategorySaved" />
+                    }
+                </div>
+            }
+
+            @if (_categorySubmissions.Any())
+            {
+                <div>
+                    <h3>Indsendte kategorier</h3>
+                    <ul>
+                        @foreach (var playerName in _categorySubmissions)
+                        {
+                            <li>@playerName</li>
+                        }
+                    </ul>
+                </div>
+            }
+            
+            @if (_isCreator && CurrentGame.AllPlayersSubmittedCategories())
+            {
+                <div>
+                    <h3>Alle spillere har indsendt deres kategorier!</h3>
+                    <button @onclick="StartGame" class="button">Start spillet</button>
+                </div>
+            }
+            else if (CurrentGame.AllPlayersSubmittedCategories())
+            {
+                <div>
+                    <h3>Alle spillere har indsendt deres kategorier!</h3>
+                    <p>Venter på at værten starter spillet...</p>
+                </div>
+            }
+        }
+        else if (CurrentGame.State == Domain.Games.GameState.InProgress)
         {
             <div>
-                <h3>Din kategori</h3>
-                @if (_categorySubmitted)
+                <h3>Spillet er i gang</h3>
+                
+                @if (_currentPlayer != null && CurrentGame.CurrentChoosingPlayerId == _currentPlayer.Id)
                 {
-                    <p>Din kategori er indsendt!</p>
+                    <div>
+                        <p>Det er din tur til at vælge en kategori og pointværdi!</p>
+                        
+                        <div class="categories-grid">
+                            @foreach (var player in CurrentGame.Players)
+                            {
+                                if (player.Category?.IsSubmitted ?? false)
+                                {
+                                    <div class="category">
+                                        <h4>@player.Category.Title</h4>
+                                        <div class="point-values">
+                                            @foreach (var pointValue in new[] { 100, 200, 300, 400, 500 })
+                                            {
+                                                <button @onclick="() => SelectClue(player.Category, pointValue)" 
+                                                        class="point-button">@pointValue</button>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
                 }
                 else
                 {
-                    <CategoryEditor 
-                        PlayerId="@_currentPlayer.Id" 
-                        ExistingCategory="@_currentPlayer.Category" 
-                        OnCategorySaved="OnCategorySaved" />
+                    <p>Venter på at @CurrentGame.Players.FirstOrDefault(p => p.Id == CurrentGame.CurrentChoosingPlayerId)?.User.Name vælger en kategori og pointværdi...</p>
                 }
-            </div>
-        }
-
-        @if (_categorySubmissions.Any())
-        {
-            <div>
-                <h3>Indsendte kategorier</h3>
-                <ul>
-                    @foreach (var playerName in _categorySubmissions)
-                    {
-                        <li>@playerName</li>
-                    }
-                </ul>
             </div>
         }
     </div>
@@ -63,3 +117,27 @@ else
 {
     <p>Henter spil information...</p>
 } 
+
+<style>
+    .categories-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .category {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        width: 200px;
+    }
+    
+    .point-values {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .point-button {
+        padding: 0.5rem;
+    }
+</style> 
