@@ -30,7 +30,11 @@ public partial class Home(
         }
 
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
-        if (CurrentPlayer == null) navigation.NavigateTo("/registerplayer");
+        if (CurrentPlayer == null) 
+        {
+            navigation.NavigateTo("/registerplayer");
+            return;
+        }
 
         IsLoading = true;
         StateHasChanged();
