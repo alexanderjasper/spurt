@@ -1,0 +1,26 @@
+@using Spurt.Domain.Games
+@using Spurt.Domain.Players
+
+<div>
+    <h3>Spillere (@Players.Count)</h3>
+    <ul>
+        @foreach (var player in Players)
+        {
+            <li>
+                @if (player.Category?.IsSubmitted ?? false)
+                {
+                    <span>✅ </span>
+                }
+                else
+                {
+                    <span>✍️ </span>
+                }
+                @player.User.Name
+                @if (player.IsCreator)
+                {
+                    <span> (Vært)</span>
+                }
+            </li>
+        }
+    </ul>
+</div> 

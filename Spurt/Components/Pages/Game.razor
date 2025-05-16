@@ -1,5 +1,6 @@
 @page "/game/{Code}"
 @using Spurt.Domain.Games
+@using Spurt.Components.Shared
 @rendermode InteractiveServer
 
 <PageTitle>Spur't | Spil</PageTitle>
@@ -12,29 +13,7 @@
         <h2>Spil @Code</h2>
         <p>Del denne kode med andre spillere, så de kan deltage i dit spil.</p>
 
-        <div>
-            <h3>Spillere (@CurrentGame.Players.Count)</h3>
-            <ul>
-                @foreach (var player in CurrentGame.Players)
-                {
-                    <li>
-                        @if (player.Category?.IsSubmitted ?? false)
-                        {
-                            <span>✅ </span>
-                        }
-                        else
-                        {
-                            <span>✍️ </span>
-                        }
-                        @player.User.Name
-                        @if (player.IsCreator)
-                        {
-                            <span> (Vært)</span>
-                        }
-                    </li>
-                }
-            </ul>
-        </div>
+        <PlayerList Players="CurrentGame.Players" />
 
         @switch (CurrentGame.State)
         {
