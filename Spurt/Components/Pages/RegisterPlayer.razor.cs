@@ -5,7 +5,10 @@ using Spurt.Domain.Players.Commands;
 
 namespace Spurt.Components.Pages;
 
-public partial class RegisterPlayer(IRegisterPlayer registerPlayer, ILocalStorageService localStorageService)
+public partial class RegisterPlayer(
+    IRegisterPlayer registerPlayer,
+    ILocalStorageService localStorageService,
+    NavigationManager navigationManager)
     : ComponentBase
 {
     private class PlayerModel
@@ -29,5 +32,6 @@ public partial class RegisterPlayer(IRegisterPlayer registerPlayer, ILocalStorag
         var player = await registerPlayer.Execute(Model.Name);
 
         await localStorageService.SetItemAsync("PlayerId", player.Id);
+        navigationManager.NavigateTo("/");
     }
 }
