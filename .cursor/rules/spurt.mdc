@@ -1,0 +1,18 @@
+---
+description: General project guidelines and structure
+globs: *
+alwaysApply: true
+---
+- UI is always in Danish
+- Use CQRS pattern in both data and domain layers
+- Razor components/pages go in ./Spurt/Components
+- Database interactions via EF Core belong in ./Spurt/Data
+- Domain logic goes in ./Spurt/Domain
+- Commands and queries are auto-registered in IoC
+- Use NSubstitute for testing, never Moq
+- Add unit tests for new/changed logic
+- Write integration tests for game workflows (mock only data layer)
+- Use PrimaryConstructors when possible
+- Use collection expressions with [] when possible
+- Make unit tests atomic - try to test only one thing at a time
+- Run dotnet build after changes to check for errors
