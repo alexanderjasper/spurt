@@ -8,6 +8,7 @@ namespace Spurt.Components.Pages;
 
 public partial class Home(
     IGetPlayer getPlayer,
+    IGetActiveGame getActiveGame,
     ICreateGame createGame,
     IJoinGame joinGame,
     ILocalStorageService localStorage,
@@ -16,6 +17,7 @@ public partial class Home(
     private Player? CurrentPlayer { get; set; }
     private bool IsCreatingGame { get; set; }
     private bool IsJoiningGame { get; set; }
+    private bool IsCheckingForExistingGames { get; set; }
     private string GameCode { get; set; } = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -32,6 +34,17 @@ public partial class Home(
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
         if (CurrentPlayer == null) navigation.NavigateTo("/registerplayer");
 
+        IsCheckingForExistingGames = true;
+        StateHasChanged();
+
+        var activeGame = await getActiveGame.Execute(CurrentPlayer.Id);
+        if (activeGame != null)
+        {
+            navigation.NavigateTo($"/game/{activeGame.Code}");
+            return;
+        }
+
+        IsCheckingForExistingGames = false;
         StateHasChanged();
     }
 
