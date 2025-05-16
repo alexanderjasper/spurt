@@ -103,7 +103,7 @@ public partial class Game(
         }
     }
 
-    private async Task SelectClue(Category category, int pointValue)
+    private async Task SelectClue(Clue clue)
     {
         if (_hubConnection == null) return;
 
