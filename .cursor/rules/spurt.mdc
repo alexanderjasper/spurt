@@ -4,12 +4,14 @@ globs: *
 alwaysApply: true
 ---
 Spurt is an online multiplayer game. It is loosely based on Jeopardy. After joining a game, each user should create a category with a title, and 5 pairs of answers and questions.
+- Only do things that you have been explicitly asked to do.
 - UI is always in Danish
 - Use CQRS pattern in both data and domain layers
-- Razor components/pages go in ./Spurt/Components
-- Database interactions via EF Core belong in ./Spurt/Data
-- Domain logic goes in ./Spurt/Domain
+- Razor components/pages go in `./Spurt/Components`
+- Database interactions via EF Core belong in `./Spurt/Data`. Only use AppDbContext in the data layer. And try to keep the data layer simple.
+- Domain logic goes in `./Spurt/Domain`. Commands and queries in `Domain` can access the `Data` layer, but never have AppDbContext as a direct dependency. If you need to write/read some new data, make a query or command in the Data layer.
 - Commands and queries are auto-registered in IoC
+- For commands and queries, add an interface in the bottom of the same file.
 - Use NSubstitute for testing, never Moq
 - Add unit tests for new/changed logic
 - Write integration tests for game workflows (mock only data layer)
@@ -20,3 +22,7 @@ Spurt is an online multiplayer game. It is loosely based on Jeopardy. After join
 - Always access Blazored.LocalStorage in OnAfterRenderAsync, never in OnInitializedAsync
 - For SignalR connections, set up in OnInitializedAsync but join groups after data is loaded
 - BlazoredLocalStorage uses JavaScript interop which is only available in OnAfterRenderAsync or event handlers
+- Don't make any styling. We are not in that phase yes. Keep it basic.
+- Reuse code elements. Avoid values and literal strings as much as possible.
+- Split into small classes.
+- Use blazor components to avoid large razor files.
