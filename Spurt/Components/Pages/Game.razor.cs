@@ -47,10 +47,10 @@ public partial class Game(
             .WithAutomaticReconnect()
             .Build();
 
-        _hubConnection.On<string>(GameHub.Events.PlayerJoined, async _ => await LoadGameData());
-        _hubConnection.On<string>(GameHub.Events.CategorySubmitted, async _ => await LoadGameData());
-        _hubConnection.On<string>(GameHub.Events.GameStarted, async _ => await LoadGameData());
-        _hubConnection.On<string>(GameHub.Events.ClueSelected, async _ => await LoadGameData());
+        _hubConnection.On(GameHub.Events.PlayerJoined, async () => await LoadGameData());
+        _hubConnection.On(GameHub.Events.CategorySubmitted, async () => await LoadGameData());
+        _hubConnection.On(GameHub.Events.GameStarted, async () => await LoadGameData());
+        _hubConnection.On(GameHub.Events.ClueSelected, async () => await LoadGameData());
 
         try
         {
@@ -113,6 +113,8 @@ public partial class Game(
 
     private async Task OnCategorySaved()
     {
+        if (_hubConnection != null) await _hubConnection.SendAsync(GameHub.Events.CategorySubmitted);
+
         await LoadGameData();
     }
 
