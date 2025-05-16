@@ -37,15 +37,13 @@ public class JoinGameWorkflowTests
     public JoinGameWorkflowTests()
     {
         // Initialize test data
-        _player1 = new Player { Id = _player1Id, Name = "Player 1" };
+        _player1 = new Player { Id = _player1Id, Name = "Player 1", IsCreator = true };
         _player2 = new Player { Id = _player2Id, Name = "Player 2" };
 
         _game = new Game
         {
             Id = Guid.NewGuid(),
             Code = _gameCode,
-            Creator = _player1,
-            CreatorId = _player1Id,
             Players = [_player1],
         };
 
@@ -88,8 +86,6 @@ public class JoinGameWorkflowTests
         {
             Id = game.Id,
             Code = game.Code,
-            Creator = player1,
-            CreatorId = player1.Id,
             Players = [player1],
         };
         _getGame.Execute(game.Code).Returns(gameWithPlayers);
@@ -104,8 +100,8 @@ public class JoinGameWorkflowTests
         Assert.Contains(player2, updatedGame.Players);
 
         // Verify game properties
-        Assert.Equal(player1.Id, updatedGame.CreatorId);
-        Assert.Equal(player1, updatedGame.Creator);
+        Assert.True(player1.IsCreator);
+        Assert.False(player2.IsCreator);
 
         // Verify UpdateGame was called to persist changes
         await _updateGame.Received(1).Execute(Arg.Any<Game>());

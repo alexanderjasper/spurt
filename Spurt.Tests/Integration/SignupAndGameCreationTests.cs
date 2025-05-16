@@ -69,8 +69,7 @@ public class SignupAndGameCreationTests
         // Verify game properties
         Assert.NotNull(game);
         Assert.Equal(6, game.Code.Length); // Game code should be 6 characters
-        Assert.Equal(player.Id, game.CreatorId);
-        Assert.Equal(player, game.Creator);
+        Assert.True(player.IsCreator);
 
         // Verify player is added to game's players list
         Assert.Contains(player, game.Players);

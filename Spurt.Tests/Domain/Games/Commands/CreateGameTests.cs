@@ -53,8 +53,7 @@ public class CreateGameTests
     {
         var result = await _createGame.Execute(_playerId);
 
-        Assert.Equal(_player, result.Creator);
-        Assert.Equal(_playerId, result.CreatorId);
+        Assert.True(_player.IsCreator);
     }
 
     [Fact]

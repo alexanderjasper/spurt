@@ -27,14 +27,12 @@ public class JoinGameTests
     public JoinGameTests()
     {
         _player = new Player { Id = _playerId, Name = "Test Player" };
-        _creator = new Player { Id = _creatorId, Name = "Creator" };
+        _creator = new Player { Id = _creatorId, Name = "Creator", IsCreator = true };
 
         _game = new Game
         {
             Id = Guid.NewGuid(),
             Code = GameCode,
-            Creator = _creator,
-            CreatorId = _creatorId,
             Players = new List<Player> { _creator },
         };
 

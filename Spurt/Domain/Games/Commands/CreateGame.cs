@@ -12,11 +12,11 @@ public class CreateGame(IAddGame addGame, IGetPlayer getPlayer) : ICreateGame
         var player = await getPlayer.Execute(playerId) ??
                      throw new ArgumentException("Player not found", nameof(playerId));
 
+        player.IsCreator = true;
+        
         var game = new Game
         {
             Code = GenerateUniqueCode(),
-            Creator = player,
-            CreatorId = player.Id,
         };
 
         game.Players.Add(player);

@@ -17,6 +17,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(100);
+        modelBuilder.Entity<Player>()
+            .Property(p => p.IsCreator)
+            .HasDefaultValue(false);
 
         modelBuilder.Entity<Game>()
             .HasKey(g => g.Id);
@@ -24,10 +27,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .Property(g => g.Code)
             .IsRequired()
             .HasMaxLength(6);
-        modelBuilder.Entity<Game>()
-            .HasOne(g => g.Creator)
-            .WithMany()
-            .HasForeignKey(g => g.CreatorId);
         modelBuilder.Entity<Game>()
             .HasMany(g => g.Players)
             .WithMany();

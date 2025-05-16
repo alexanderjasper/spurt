@@ -6,6 +6,7 @@ public class UpdateGame(AppDbContext dbContext) : IUpdateGame
 {
     public async Task Execute(Game game)
     {
+        game.ValidateCreator();
         dbContext.Games.Update(game);
         await dbContext.SaveChangesAsync();
     }
