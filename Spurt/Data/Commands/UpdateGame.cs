@@ -14,4 +14,4 @@ public class UpdateGame(AppDbContext dbContext) : IUpdateGame
 public interface IUpdateGame
 {
     Task Execute(Game game);
-} 
+}

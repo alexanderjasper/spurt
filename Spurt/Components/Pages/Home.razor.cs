@@ -45,14 +45,14 @@ public partial class Home(
         var game = await createGame.Execute(CurrentPlayer.Id);
         navigation.NavigateTo($"/game/{game.Code}");
     }
-    
+
     private async Task JoinGame()
     {
         if (CurrentPlayer == null || string.IsNullOrWhiteSpace(GameCode)) return;
-        
+
         IsJoiningGame = true;
         StateHasChanged();
-        
+
         try
         {
             var game = await joinGame.Execute(GameCode.Trim().ToUpper(), CurrentPlayer.Id);
