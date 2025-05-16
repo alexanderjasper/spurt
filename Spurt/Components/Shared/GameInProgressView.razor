@@ -1,0 +1,20 @@
+<div>
+    <h3>Spillet er i gang</h3>
+
+    @if (CurrentPlayer != null && Game.CurrentChoosingPlayerId == CurrentPlayer.Id)
+    {
+        <div>
+            <p>Det er din tur til at vælge en kategori og pointværdi!</p>
+
+            <GameBoard
+                Categories="Game.Players.Select(p => p.Category!)"
+                OnClueSelected="OnClueSelected"/>
+        </div>
+    }
+    else
+    {
+        <p>Venter på
+            at @Game.Players.FirstOrDefault(p => p.Id == Game.CurrentChoosingPlayerId)?.User.Name vælger
+            en kategori og pointværdi...</p>
+    }
+</div> 

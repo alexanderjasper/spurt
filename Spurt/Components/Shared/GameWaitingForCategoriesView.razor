@@ -1,0 +1,37 @@
+@using Spurt.Components.Pages
+@if (CurrentPlayer != null)
+{
+    <div>
+        @if (CurrentPlayer.IsCreator && Game.AllPlayersSubmittedCategories())
+        {
+            <div>
+                <h3>Alle spillere har indsendt deres kategorier!</h3>
+                <button @onclick="OnStartGame" class="button">Start spillet</button>
+            </div>
+        }
+        else if (Game.AllPlayersSubmittedCategories())
+        {
+            <div>
+                <h3>Alle spillere har indsendt deres kategorier!</h3>
+                <p>Venter på at værten starter spillet...</p>
+            </div>
+        }
+        else
+        {
+            <div>
+                <h3>Din kategori</h3>
+                @if (CurrentPlayer.Category?.IsSubmitted ?? false)
+                {
+                    <p>Din kategori er indsendt!</p>
+                }
+                else
+                {
+                    <CategoryEditor
+                        PlayerId="@CurrentPlayer.Id"
+                        ExistingCategory="@CurrentPlayer.Category"
+                        OnCategorySaved="OnCategorySaved"/>
+                }
+            </div>
+        }
+    </div>
+}
