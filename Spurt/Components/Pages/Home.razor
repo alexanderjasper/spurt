@@ -10,17 +10,9 @@
     <h2>Velkommen @CurrentPlayer.Name</h2>
 
     <div class="actions">
-        @if (IsCheckingForExistingGames)
+        @if (IsLoading)
         {
-            <p>Tjekker for aktive spil...</p>
-        }
-        else if (IsCreatingGame)
-        {
-            <p>Opretter spil...</p>
-        }
-        else if (IsJoiningGame)
-        {
-            <p>Tilslutter spil...</p>
+            <p>Indlæser...</p>
         }
         else
         {

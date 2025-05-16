@@ -15,9 +15,7 @@ public partial class Home(
     NavigationManager navigation)
 {
     private Player? CurrentPlayer { get; set; }
-    private bool IsCreatingGame { get; set; }
-    private bool IsJoiningGame { get; set; }
-    private bool IsCheckingForExistingGames { get; set; }
+    private bool IsLoading { get; set; }
     private string GameCode { get; set; } = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -34,7 +32,7 @@ public partial class Home(
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
         if (CurrentPlayer == null) navigation.NavigateTo("/registerplayer");
 
-        IsCheckingForExistingGames = true;
+        IsLoading = true;
         StateHasChanged();
 
         var activeGame = await getActiveGame.Execute(CurrentPlayer.Id);
@@ -44,7 +42,7 @@ public partial class Home(
             return;
         }
 
-        IsCheckingForExistingGames = false;
+        IsLoading = false;
         StateHasChanged();
     }
 
@@ -52,7 +50,7 @@ public partial class Home(
     {
         if (CurrentPlayer == null) return;
 
-        IsCreatingGame = true;
+        IsLoading = true;
         StateHasChanged();
 
         var game = await createGame.Execute(CurrentPlayer.Id);
@@ -63,7 +61,7 @@ public partial class Home(
     {
         if (CurrentPlayer == null || string.IsNullOrWhiteSpace(GameCode)) return;
 
-        IsJoiningGame = true;
+        IsLoading = true;
         StateHasChanged();
 
         try
@@ -73,7 +71,7 @@ public partial class Home(
         }
         catch
         {
-            IsJoiningGame = false;
+            IsLoading = false;
             StateHasChanged();
         }
     }
