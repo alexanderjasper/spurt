@@ -44,14 +44,7 @@ public partial class Game(
             .Build();
 
         _hubConnection.On<string>(GameHub.Events.PlayerJoined, async _ => await LoadGameData());
-        _hubConnection.On<string>(GameHub.Events.CategorySubmitted, async playerName =>
-        {
-            if (!_categorySubmissions.Contains(playerName))
-            {
-                _categorySubmissions.Add(playerName);
-                await InvokeAsync(StateHasChanged);
-            }
-        });
+        _hubConnection.On<string>(GameHub.Events.CategorySubmitted, async _ => await LoadGameData());
 
         try
         {

@@ -34,8 +34,7 @@ public class SaveCategory(
             savedCategory = await updateCategory.Execute(category);
 
         if (category.IsSubmitted && hubContext != null && savedCategory.Player?.Game != null)
-            await hubContext.Clients.Group(savedCategory.Player.Game.Code)
-                .SendAsync(GameHub.Events.CategorySubmitted, savedCategory.Player.User.Name);
+            await hubContext.Clients.Group(savedCategory.Player.Game.Code).SendAsync(GameHub.Events.CategorySubmitted);
 
         return savedCategory;
     }

@@ -31,7 +31,7 @@ public class JoinGame(
         };
 
         await addPlayer.Execute(player);
-        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.PlayerJoined, user.Name);
+        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.PlayerJoined);
 
         return game;
     }
