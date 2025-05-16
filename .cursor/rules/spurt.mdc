@@ -16,3 +16,6 @@ alwaysApply: true
 - Use collection expressions with [] when possible
 - Make unit tests atomic - try to test only one thing at a time
 - Run dotnet build after changes to check for errors
+- Always access Blazored.LocalStorage in OnAfterRenderAsync, never in OnInitializedAsync
+- For SignalR connections, set up in OnInitializedAsync but join groups after data is loaded
+- BlazoredLocalStorage uses JavaScript interop which is only available in OnAfterRenderAsync or event handlers
