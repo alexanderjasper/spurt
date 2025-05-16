@@ -1,0 +1,42 @@
+@using Spurt.Domain.Categories
+@using Spurt.Domain.Players
+
+<div class="categories-grid">
+    @foreach (var category in Categories)
+    {
+        <div class="category">
+            <h4>@category!.Title</h4>
+            <div class="point-values">
+                @foreach (var clue in category.Clues.OrderBy(c => c.PointValue))
+                {
+                    <button @onclick="() => OnClueSelected.InvokeAsync(clue)"
+                            class="point-button">@clue.PointValue</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .categories-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .category {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        width: 200px;
+    }
+
+    .point-values {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .point-button {
+        padding: 0.5rem;
+    }
+</style> 

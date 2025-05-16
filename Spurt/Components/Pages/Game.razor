@@ -66,22 +66,10 @@
                     {
                         <div>
                             <p>Det er din tur til at vælge en kategori og pointværdi!</p>
-
-                            <div class="categories-grid">
-                                @foreach (var category in CurrentGame.Players.Select(p => p.Category))
-                                {
-                                    <div class="category">
-                                        <h4>@category!.Title</h4>
-                                        <div class="point-values">
-                                            @foreach (var clue in category.Clues.OrderBy(c => c.PointValue))
-                                            {
-                                                <button @onclick="() => SelectClue(clue)"
-                                                        class="point-button">@clue.PointValue</button>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                            
+                            <GameBoard 
+                                Categories="CurrentGame.Players.Select(p => p.Category!)" 
+                                OnClueSelected="SelectClue" />
                         </div>
                     }
                     else
@@ -101,26 +89,4 @@ else
     <p>Henter spil information...</p>
 }
 
-<style>
-    .categories-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .category {
-        border: 1px solid #ccc;
-        padding: 0.5rem;
-        width: 200px;
-    }
-
-    .point-values {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .point-button {
-        padding: 0.5rem;
-    }
-</style> 
+ 
