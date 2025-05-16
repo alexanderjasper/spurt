@@ -3,6 +3,7 @@ description: General project guidelines and structure
 globs: *
 alwaysApply: true
 ---
+Spurt is an online multiplayer game. It is loosely based on Jeopardy. After joining a game, each user should create a category with a title, and 5 pairs of answers and questions.
 - UI is always in Danish
 - Use CQRS pattern in both data and domain layers
 - Razor components/pages go in ./Spurt/Components
