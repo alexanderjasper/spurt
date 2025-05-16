@@ -2,12 +2,14 @@ using Blazored.LocalStorage;
 using Microsoft.EntityFrameworkCore;
 using Spurt.Components;
 using Spurt.Data;
+using Spurt.Domain.Games;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddSignalR();
 
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -54,5 +56,6 @@ app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+app.MapHub<GameHub>("/gamehub");
 
 app.Run();

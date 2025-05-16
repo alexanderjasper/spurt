@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.SignalR;
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
 
 namespace Spurt.Domain.Games.Commands;
 
-public class JoinGame(IGetGame getGame, IGetPlayer getPlayer, IUpdateGame updateGame) : IJoinGame
+public class JoinGame(
+    IGetGame getGame,
+    IGetPlayer getPlayer,
+    IUpdateGame updateGame,
+    IHubContext<GameHub> hubContext) : IJoinGame
 {
     public async Task<Game> Execute(string gameCode, Guid playerId)
     {
@@ -18,6 +23,7 @@ public class JoinGame(IGetGame getGame, IGetPlayer getPlayer, IUpdateGame update
         game.Players.Add(player);
 
         await updateGame.Execute(game);
+        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.PlayerJoined, player.Name);
 
         return game;
     }

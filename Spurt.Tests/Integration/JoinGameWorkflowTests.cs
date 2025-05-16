@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.SignalR;
 using NSubstitute;
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
@@ -23,6 +24,7 @@ public class JoinGameWorkflowTests
     private readonly IUpdateGame _updateGame;
     private readonly IGetPlayer _getPlayer;
     private readonly IGetGame _getGame;
+    private readonly IHubContext<GameHub> _hubContext;
 
     // Test data
     private readonly Guid _player1Id = Guid.NewGuid();
@@ -59,10 +61,12 @@ public class JoinGameWorkflowTests
         _getGame = Substitute.For<IGetGame>();
         _getGame.Execute(_gameCode).Returns(_game);
 
+        _hubContext = Substitute.For<IHubContext<GameHub>>();
+
         // Create real implementations with mocked dependencies
         _registerPlayer = new RegisterPlayer(_addPlayer);
         _createGame = new CreateGame(_addGame, _getPlayer);
-        _joinGame = new JoinGame(_getGame, _getPlayer, _updateGame);
+        _joinGame = new JoinGame(_getGame, _getPlayer, _updateGame, _hubContext);
     }
 
     [Fact]
