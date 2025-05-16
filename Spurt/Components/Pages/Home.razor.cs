@@ -22,31 +22,58 @@ public partial class Home(
     {
         if (!firstRender) return;
 
+        if (!await LoadCurrentPlayer())
+            return;
+
+        await CheckForActiveGame();
+    }
+
+    private async Task<bool> LoadCurrentPlayer()
+    {
         var playerId = await localStorage.GetItemAsync<Guid?>("PlayerId");
         if (playerId == null)
         {
-            navigation.NavigateTo("/registerplayer");
-            return;
+            NavigateToPlayerRegistration();
+            return false;
         }
 
         CurrentPlayer = await getPlayer.Execute(playerId.Value);
-        if (CurrentPlayer == null) 
+        if (CurrentPlayer == null)
         {
-            navigation.NavigateTo("/registerplayer");
-            return;
+            NavigateToPlayerRegistration();
+            return false;
         }
 
-        IsLoading = true;
-        StateHasChanged();
+        return true;
+    }
 
-        var activeGame = await getActiveGame.Execute(CurrentPlayer.Id);
+    private void NavigateToPlayerRegistration()
+    {
+        navigation.NavigateTo("/registerplayer");
+    }
+
+    private async Task CheckForActiveGame()
+    {
+        SetLoading(true);
+
+        var activeGame = await getActiveGame.Execute(CurrentPlayer!.Id);
         if (activeGame != null)
         {
-            navigation.NavigateTo($"/game/{activeGame.Code}");
+            NavigateToGame(activeGame);
             return;
         }
 
-        IsLoading = false;
+        SetLoading(false);
+    }
+
+    private void NavigateToGame(Domain.Games.Game game)
+    {
+        navigation.NavigateTo($"/game/{game.Code}");
+    }
+
+    private void SetLoading(bool isLoading)
+    {
+        IsLoading = isLoading;
         StateHasChanged();
     }
 
@@ -54,29 +81,26 @@ public partial class Home(
     {
         if (CurrentPlayer == null) return;
 
-        IsLoading = true;
-        StateHasChanged();
+        SetLoading(true);
 
         var game = await createGame.Execute(CurrentPlayer.Id);
-        navigation.NavigateTo($"/game/{game.Code}");
+        NavigateToGame(game);
     }
 
     private async Task JoinGame()
     {
         if (CurrentPlayer == null || string.IsNullOrWhiteSpace(GameCode)) return;
 
-        IsLoading = true;
-        StateHasChanged();
+        SetLoading(true);
 
         try
         {
             var game = await joinGame.Execute(GameCode.Trim().ToUpper(), CurrentPlayer.Id);
-            navigation.NavigateTo($"/game/{game.Code}");
+            NavigateToGame(game);
         }
         catch
         {
-            IsLoading = false;
-            StateHasChanged();
+            SetLoading(false);
         }
     }
 }
