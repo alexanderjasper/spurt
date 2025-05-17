@@ -13,11 +13,22 @@
             <p>Hvad er spørgsmålet?</p>
         </div>
     }
+    else if (IsClueOwner)
+    {
+        <div class="judge-answer">
+            <p>@Game.BuzzedPlayer?.User.Name trykkede først på buzzeren.</p>
+            <p>Er svaret korrekt?</p>
+            <div class="judgment-buttons">
+                <button class="btn btn-success" @onclick="() => JudgeAnswer(true)">Korrekt</button>
+                <button class="btn btn-danger" @onclick="() => JudgeAnswer(false)">Forkert</button>
+            </div>
+        </div>
+    }
     else
     {
         <div class="buzzer-waiting">
             <p>@Game.BuzzedPlayer?.User.Name trykkede først på buzzeren.</p>
-            <p>Vent...</p>
+            <p>Vent på bedømmelse fra ledetrådens ejer...</p>
         </div>
     }
 </div> 
