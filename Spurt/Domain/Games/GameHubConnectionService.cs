@@ -7,10 +7,7 @@ public interface IGameHubConnectionService : IAsyncDisposable
 {
     Task Initialize(string gameCode);
     bool IsConnected { get; }
-    void RegisterOnPlayerJoined(Func<Task> handler);
-    void RegisterOnCategorySubmitted(Func<Task> handler);
-    void RegisterOnGameStarted(Func<Task> handler);
-    void RegisterOnClueSelected(Func<Task> handler);
+    void RegisterOnGameUpdated(Func<Task> handler);
 }
 
 public class GameHubConnectionService(NavigationManager navigation) : IGameHubConnectionService
@@ -39,25 +36,11 @@ public class GameHubConnectionService(NavigationManager navigation) : IGameHubCo
         }
     }
 
-    public void RegisterOnPlayerJoined(Func<Task> handler)
+    public void RegisterOnGameUpdated(Func<Task> handler)
     {
-        _hubConnection?.On(GameHub.Events.PlayerJoined, handler);
+        _hubConnection?.On(GameHub.Events.GameUpdated, handler);
     }
 
-    public void RegisterOnCategorySubmitted(Func<Task> handler)
-    {
-        _hubConnection?.On(GameHub.Events.CategorySubmitted, handler);
-    }
-
-    public void RegisterOnGameStarted(Func<Task> handler)
-    {
-        _hubConnection?.On(GameHub.Events.GameStarted, handler);
-    }
-
-    public void RegisterOnClueSelected(Func<Task> handler)
-    {
-        _hubConnection?.On(GameHub.Events.ClueSelected, handler);
-    }
 
     public async ValueTask DisposeAsync()
     {

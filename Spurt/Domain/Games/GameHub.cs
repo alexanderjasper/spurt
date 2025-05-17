@@ -11,10 +11,7 @@ public class GameHub : Hub
 
     public static class Events
     {
-        public const string PlayerJoined = nameof(PlayerJoined);
-        public const string CategorySubmitted = nameof(CategorySubmitted);
-        public const string GameStarted = nameof(GameStarted);
-        public const string ClueSelected = nameof(ClueSelected);
+        public const string GameUpdated = nameof(GameUpdated);
     }
 
     public async Task JoinGameGroup(string gameCode)

@@ -40,11 +40,7 @@ public partial class Game(
     private async Task InitializeGameHub()
     {
         await gameHubConnectionService.Initialize(Code);
-
-        gameHubConnectionService.RegisterOnPlayerJoined(LoadGameData);
-        gameHubConnectionService.RegisterOnCategorySubmitted(LoadGameData);
-        gameHubConnectionService.RegisterOnGameStarted(LoadGameData);
-        gameHubConnectionService.RegisterOnClueSelected(LoadGameData);
+        gameHubConnectionService.RegisterOnGameUpdated(LoadGameData);
     }
 
     private async Task LoadGameData()

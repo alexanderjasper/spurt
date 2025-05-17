@@ -30,7 +30,7 @@ public class JoinGame(
         };
 
         await addPlayer.Execute(player);
-        await gameHubNotificationService.NotifyPlayerJoined(gameCode);
+        await gameHubNotificationService.NotifyGameUpdated(gameCode);
 
         return game;
     }

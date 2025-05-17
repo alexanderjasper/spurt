@@ -26,7 +26,7 @@ public class StartGame(
         game.CurrentChoosingPlayerId = creator.Id;
 
         await updateGame.Execute(game);
-        await gameHubNotificationService.NotifyGameStarted(gameCode);
+        await gameHubNotificationService.NotifyGameUpdated(gameCode);
 
         return game;
     }

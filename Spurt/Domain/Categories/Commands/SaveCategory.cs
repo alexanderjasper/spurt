@@ -33,7 +33,7 @@ public class SaveCategory(
             savedCategory = await updateCategory.Execute(category);
 
         if (category.IsSubmitted && savedCategory.Player?.Game != null)
-            await gameHubNotificationService.NotifyCategorySubmitted(savedCategory.Player.Game.Code);
+            await gameHubNotificationService.NotifyGameUpdated(savedCategory.Player.Game.Code);
 
         return savedCategory;
     }
