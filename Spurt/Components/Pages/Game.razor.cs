@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Spurt.Data.Commands;
 using Spurt.Data.Queries;
 using Spurt.Domain.Categories;
 using Spurt.Domain.Games;
@@ -15,6 +16,7 @@ public partial class Game(
     IStartGame startGame,
     ISelectClue selectClue,
     IPressBuzzer pressBuzzer,
+    IClearContext clearContext,
     IGameHubConnectionService gameHubConnectionService) : IAsyncDisposable
 {
     [Parameter] public required string Code { get; init; }
@@ -49,6 +51,7 @@ public partial class Game(
     {
         CurrentGame = updatedGame;
         _currentPlayer = CurrentGame.Players.FirstOrDefault(p => p.UserId == _currentUserId);
+        clearContext.Execute();
         await InvokeAsync(StateHasChanged);
     }
 
