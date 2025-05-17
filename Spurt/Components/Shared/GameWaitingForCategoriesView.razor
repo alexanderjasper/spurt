@@ -1,6 +1,7 @@
 @using Spurt.Components.Pages
 @if (CurrentPlayer != null)
 {
+    <PlayerList Players="Game.Players"/>
     <div>
         @if (CurrentPlayer.IsCreator && Game.AllPlayersSubmittedCategories())
         {
