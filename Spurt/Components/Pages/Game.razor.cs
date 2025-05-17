@@ -113,8 +113,6 @@ public partial class Game(
 
     private async Task OnCategorySaved()
     {
-        if (_hubConnection != null) await _hubConnection.SendAsync(GameHub.Events.CategorySubmitted);
-
         await LoadGameData();
     }
 
