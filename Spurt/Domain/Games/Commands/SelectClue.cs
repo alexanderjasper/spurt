@@ -3,7 +3,11 @@ using Spurt.Data.Queries;
 
 namespace Spurt.Domain.Games.Commands;
 
-public class SelectClue(IGetGame getGame, IGetClue getClue, IUpdateGame updateGame) : ISelectClue
+public class SelectClue(
+    IGetGame getGame, 
+    IGetClue getClue, 
+    IUpdateGame updateGame,
+    IGameHubNotificationService notificationService) : ISelectClue
 {
     public async Task<Game> Execute(string gameCode, Guid clueId)
     {
@@ -24,7 +28,8 @@ public class SelectClue(IGetGame getGame, IGetClue getClue, IUpdateGame updateGa
 
         game.State = GameState.ClueSelected;
 
-        await updateGame.Execute(game);
+        var result = await updateGame.Execute(game);
+        await notificationService.NotifyGameUpdated(result);
 
         return game;
     }
