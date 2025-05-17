@@ -29,6 +29,7 @@ public class JoinGame(
             GameId = game.Id,
         };
 
+        game.Players.Add(player);
         await addPlayer.Execute(player);
 
         game = await getGame.Execute(gameCode) ??
