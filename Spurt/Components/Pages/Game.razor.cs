@@ -65,8 +65,7 @@ public partial class Game(
         try
         {
             ErrorMessage = null;
-            await startGame.Execute(Code, _currentUserId.Value);
-            await LoadGameData();
+            CurrentGame = await startGame.Execute(Code, _currentUserId.Value);
         }
         catch (Exception ex)
         {
