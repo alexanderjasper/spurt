@@ -3,7 +3,10 @@ using Spurt.Data.Queries;
 
 namespace Spurt.Domain.Games.Commands;
 
-public class PressBuzzer(IGetGame getGame, IUpdateGame updateGame) : IPressBuzzer
+public class PressBuzzer(
+    IGetGame getGame,
+    IUpdateGame updateGame,
+    IGameHubNotificationService notificationService) : IPressBuzzer
 {
     public async Task<Game> Execute(string gameCode, Guid playerId)
     {
@@ -32,9 +35,10 @@ public class PressBuzzer(IGetGame getGame, IUpdateGame updateGame) : IPressBuzze
         game.BuzzedTime = DateTime.UtcNow;
         game.State = GameState.BuzzerPressed;
 
-        await updateGame.Execute(game);
+        var result = await updateGame.Execute(game);
+        await notificationService.NotifyGameUpdated(result);
 
-        return game;
+        return result;
     }
 }
 
