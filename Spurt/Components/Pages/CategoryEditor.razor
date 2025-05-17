@@ -1,3 +1,5 @@
+@using Spurt.Components.Shared
+
 <div>
     <h3>@(IsEditing ? "Rediger kategori" : "Opret kategori")</h3>
 
@@ -36,10 +38,7 @@
         </button>
     </div>
 
-    @if (ErrorMessage != null)
-    {
-        <div>
-            <p>@ErrorMessage</p>
-        </div>
-    }
+    <ErrorDisplay 
+        ErrorMessage="@ErrorMessage"
+        OnErrorDismissed="ClearError" />
 </div>

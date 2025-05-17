@@ -20,6 +20,7 @@ public partial class Game(
     private Domain.Games.Game? CurrentGame { get; set; }
     private Guid? _currentUserId;
     private Player? _currentPlayer;
+    private string? ErrorMessage { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -67,13 +68,19 @@ public partial class Game(
 
         try
         {
+            ErrorMessage = null;
             await startGame.Execute(Code, _currentUserId.Value);
             await LoadGameData();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Handle the error - could show a message to the user
+            ErrorMessage = ex.Message;
         }
+    }
+
+    private void ClearError()
+    {
+        ErrorMessage = null;
     }
 
     private async Task SelectClue(Clue clue)

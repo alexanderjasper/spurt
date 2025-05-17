@@ -109,4 +109,9 @@ public partial class CategoryEditor
             ErrorMessage = ex.Message;
         }
     }
+    
+    private void ClearError()
+    {
+        ErrorMessage = null;
+    }
 }

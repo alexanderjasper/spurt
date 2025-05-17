@@ -15,6 +15,10 @@
 
         <PlayerList Players="CurrentGame.Players"/>
 
+        <ErrorDisplay 
+            ErrorMessage="@ErrorMessage"
+            OnErrorDismissed="ClearError" />
+
         @switch (CurrentGame.State)
         {
             case GameState.WaitingForCategories:
