@@ -1,6 +1,5 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 using Spurt.Data.Queries;
 using Spurt.Domain.Categories;
 using Spurt.Domain.Games;
@@ -21,9 +20,6 @@ public partial class Game(
     private Domain.Games.Game? CurrentGame { get; set; }
     private Guid? _currentUserId;
     private Player? _currentPlayer;
-    private bool _categorySubmitted;
-    private bool _isCreator;
-    private List<string> _categorySubmissions = [];
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,7 +39,7 @@ public partial class Game(
     private async Task InitializeGameHub()
     {
         await gameHubConnectionService.Initialize(Code);
-        
+
         gameHubConnectionService.RegisterOnPlayerJoined(LoadGameData);
         gameHubConnectionService.RegisterOnCategorySubmitted(LoadGameData);
         gameHubConnectionService.RegisterOnGameStarted(LoadGameData);
@@ -61,16 +57,6 @@ public partial class Game(
         }
 
         _currentPlayer = CurrentGame.Players.FirstOrDefault(p => p.UserId == _currentUserId);
-        if (_currentPlayer != null)
-        {
-            _categorySubmitted = _currentPlayer.Category?.IsSubmitted ?? false;
-            _isCreator = _currentPlayer.IsCreator;
-        }
-
-        _categorySubmissions = CurrentGame.Players
-            .Where(p => p.Category?.IsSubmitted ?? false)
-            .Select(p => p.User.Name)
-            .ToList();
 
         await InvokeAsync(StateHasChanged);
     }

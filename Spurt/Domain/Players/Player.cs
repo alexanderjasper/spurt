@@ -1,6 +1,6 @@
+using Spurt.Domain.Categories;
 using Spurt.Domain.Games;
 using Spurt.Domain.Users;
-using Spurt.Domain.Categories;
 
 namespace Spurt.Domain.Players;
 

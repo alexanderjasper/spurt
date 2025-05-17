@@ -5,6 +5,7 @@ using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
 using Spurt.Domain.Users;
 using Spurt.Domain.Users.Commands;
+
 // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
 
 namespace Spurt.Tests.Integration;

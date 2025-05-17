@@ -15,4 +15,4 @@ public class AddCategory(AppDbContext dbContext) : IAddCategory
 public interface IAddCategory
 {
     Task<Category> Execute(Category category);
-} 
+}

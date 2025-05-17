@@ -6,4 +6,4 @@ namespace Spurt.Components.Shared;
 public partial class PlayerList
 {
     [Parameter] public required IReadOnlyList<Player> Players { get; set; }
-} 
+}

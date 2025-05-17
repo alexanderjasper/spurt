@@ -10,4 +10,4 @@ public partial class GameInProgressView
     [Parameter] public required Game Game { get; set; }
     [Parameter] public Player? CurrentPlayer { get; set; }
     [Parameter] public EventCallback<Clue> OnClueSelected { get; set; }
-} 
+}

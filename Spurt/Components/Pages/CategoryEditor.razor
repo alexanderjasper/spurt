@@ -1,14 +1,11 @@
-@using Spurt.Domain.Categories
-@using Spurt.Domain.Categories.Commands
-
 <div>
     <h3>@(IsEditing ? "Rediger kategori" : "Opret kategori")</h3>
-    
+
     <div>
         <label for="categoryTitle">Kategorinavn</label>
-        <input id="categoryTitle" @bind="Category.Title" />
+        <input id="categoryTitle" @bind="Category.Title"/>
     </div>
-    
+
     <h4>Spørgsmål</h4>
     <p>Opret 5 spørgsmål med pointværdier fra 100 til 500.</p>
 
@@ -16,28 +13,29 @@
     {
         var index = PointValueToIndex(pointValue);
         EnsureClueExists(pointValue);
-        
+
         <div>
             <h5>@pointValue point</h5>
             <div>
                 <div>
                     <label>Svar (vises til spillerne)</label>
-                    <input @bind="@Category.Clues[index].Answer" @bind:event="oninput" />
+                    <input @bind="@Category.Clues[index].Answer" @bind:event="oninput"/>
                 </div>
                 <div>
                     <label>Spørgsmål (hvad spillerne skal svare)</label>
-                    <input @bind="@Category.Clues[index].Question" @bind:event="oninput" />
+                    <input @bind="@Category.Clues[index].Question" @bind:event="oninput"/>
                 </div>
             </div>
         </div>
     }
-    
+
     <div>
         <button @onclick="SaveDraft">Gem kladde</button>
-        <button @onclick="SubmitCategory" 
-                disabled="@(!IsValid)">Indsend kategori</button>
+        <button @onclick="SubmitCategory"
+                disabled="@(!IsValid)">Indsend kategori
+        </button>
     </div>
-    
+
     @if (ErrorMessage != null)
     {
         <div>

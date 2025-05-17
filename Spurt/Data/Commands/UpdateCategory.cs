@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Spurt.Domain.Categories;
 
 namespace Spurt.Data.Commands;
@@ -16,4 +15,4 @@ public class UpdateCategory(AppDbContext dbContext) : IUpdateCategory
 public interface IUpdateCategory
 {
     Task<Category> Execute(Category category);
-} 
+}
