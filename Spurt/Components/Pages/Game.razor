@@ -15,9 +15,9 @@
 
         <PlayerList Players="CurrentGame.Players"/>
 
-        <ErrorDisplay 
+        <ErrorDisplay
             ErrorMessage="@ErrorMessage"
-            OnErrorDismissed="ClearError" />
+            OnErrorDismissed="ClearError"/>
 
         @switch (CurrentGame.State)
         {
@@ -40,7 +40,7 @@
 }
 else
 {
-    <p>Henter spil information...</p>
+    <LoadingIndicator/>
 }
 
  
