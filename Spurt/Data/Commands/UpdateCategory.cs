@@ -6,9 +6,9 @@ public class UpdateCategory(AppDbContext dbContext) : IUpdateCategory
 {
     public async Task<Category> Execute(Category category)
     {
-        dbContext.Categories.Update(category);
+        var result = dbContext.Categories.Update(category);
         await dbContext.SaveChangesAsync();
-        return category;
+        return result.Entity;
     }
 }
 

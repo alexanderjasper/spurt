@@ -4,15 +4,16 @@ namespace Spurt.Data.Commands;
 
 public class AddGame(AppDbContext dbContext) : IAddGame
 {
-    public async Task Execute(Game game)
+    public async Task<Game> Execute(Game game)
     {
         game.ValidateCreator();
-        await dbContext.Games.AddAsync(game);
+        var result = await dbContext.Games.AddAsync(game);
         await dbContext.SaveChangesAsync();
+        return result.Entity;
     }
 }
 
 public interface IAddGame
 {
-    Task Execute(Game game);
+    Task<Game> Execute(Game game);
 }

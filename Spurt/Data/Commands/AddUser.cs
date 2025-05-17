@@ -4,14 +4,15 @@ namespace Spurt.Data.Commands;
 
 public class AddUser(AppDbContext dbContext) : IAddUser
 {
-    public async Task Execute(User user)
+    public async Task<User> Execute(User user)
     {
-        await dbContext.Users.AddAsync(user);
+        var result = await dbContext.Users.AddAsync(user);
         await dbContext.SaveChangesAsync();
+        return result.Entity;
     }
 }
 
 public interface IAddUser
 {
-    Task Execute(User user);
+    Task<User> Execute(User user);
 }

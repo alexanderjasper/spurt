@@ -4,14 +4,15 @@ namespace Spurt.Data.Commands;
 
 public class AddPlayer(AppDbContext dbContext) : IAddPlayer
 {
-    public async Task Execute(Player player)
+    public async Task<Player> Execute(Player player)
     {
-        await dbContext.Players.AddAsync(player);
+        var result = await dbContext.Players.AddAsync(player);
         await dbContext.SaveChangesAsync();
+        return result.Entity;
     }
 }
 
 public interface IAddPlayer
 {
-    Task Execute(Player player);
+    Task<Player> Execute(Player player);
 }
