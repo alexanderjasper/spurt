@@ -1,4 +1,5 @@
 using Spurt.Data.Commands;
+using Spurt.Data.Queries;
 using Spurt.Domain.Games;
 
 namespace Spurt.Domain.Categories.Commands;
@@ -6,6 +7,7 @@ namespace Spurt.Domain.Categories.Commands;
 public class SaveCategory(
     IAddCategory addCategory,
     IUpdateCategory updateCategory,
+    IGetGame getGame,
     IGameHubNotificationService gameHubNotificationService) : ISaveCategory
 {
     public async Task<Category> Execute(Category category, bool isSubmitting = false)
@@ -32,8 +34,11 @@ public class SaveCategory(
         else
             savedCategory = await updateCategory.Execute(category);
 
-        if (category.IsSubmitted && savedCategory.Player?.Game != null)
-            await gameHubNotificationService.NotifyGameUpdated(savedCategory.Player.Game.Code);
+        if (!category.IsSubmitted || savedCategory.Player?.Game == null) return savedCategory;
+
+        var game = await getGame.Execute(savedCategory.Player.Game.Code) ??
+                   throw new InvalidOperationException("Game not found after saving category.");
+        await gameHubNotificationService.NotifyGameUpdated(game);
 
         return savedCategory;
     }

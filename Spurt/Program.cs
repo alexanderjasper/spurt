@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using Microsoft.EntityFrameworkCore;
 using Spurt.Components;
@@ -9,7 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddSignalR();
+
+// Configure SignalR to handle circular references
+builder.Services.AddSignalR()
+    .AddJsonProtocol(options => { options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve; });
 
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>

@@ -26,7 +26,10 @@ public class StartGame(
         game.CurrentChoosingPlayerId = creator.Id;
 
         await updateGame.Execute(game);
-        await gameHubNotificationService.NotifyGameUpdated(gameCode);
+
+        game = await getGame.Execute(gameCode) ??
+               throw new InvalidOperationException("Game not found after update");
+        await gameHubNotificationService.NotifyGameUpdated(game);
 
         return game;
     }

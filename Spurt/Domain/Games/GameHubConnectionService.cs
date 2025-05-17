@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using System.Text.Json.Serialization;
 
 namespace Spurt.Domain.Games;
 
@@ -7,7 +8,7 @@ public interface IGameHubConnectionService : IAsyncDisposable
 {
     Task Initialize(string gameCode);
     bool IsConnected { get; }
-    void RegisterOnGameUpdated(Func<Task> handler);
+    void RegisterOnGameUpdated(Func<Game, Task> handler);
 }
 
 public class GameHubConnectionService(NavigationManager navigation) : IGameHubConnectionService
@@ -23,6 +24,10 @@ public class GameHubConnectionService(NavigationManager navigation) : IGameHubCo
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(navigation.ToAbsoluteUri("/gamehub"))
             .WithAutomaticReconnect()
+            .AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            })
             .Build();
 
         try
@@ -36,11 +41,10 @@ public class GameHubConnectionService(NavigationManager navigation) : IGameHubCo
         }
     }
 
-    public void RegisterOnGameUpdated(Func<Task> handler)
+    public void RegisterOnGameUpdated(Func<Game, Task> handler)
     {
-        _hubConnection?.On(GameHub.Events.GameUpdated, handler);
+        _hubConnection?.On<Game>(GameHub.Events.GameUpdated, handler);
     }
-
 
     public async ValueTask DisposeAsync()
     {

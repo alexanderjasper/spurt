@@ -40,7 +40,14 @@ public partial class Game(
     private async Task InitializeGameHub()
     {
         await gameHubConnectionService.Initialize(Code);
-        gameHubConnectionService.RegisterOnGameUpdated(LoadGameData);
+        gameHubConnectionService.RegisterOnGameUpdated(UpdateGameData);
+    }
+
+    private async Task UpdateGameData(Domain.Games.Game updatedGame)
+    {
+        CurrentGame = updatedGame;
+        _currentPlayer = CurrentGame.Players.FirstOrDefault(p => p.UserId == _currentUserId);
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LoadGameData()
