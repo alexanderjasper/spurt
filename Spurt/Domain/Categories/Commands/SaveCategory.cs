@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
 using Spurt.Data.Commands;
 using Spurt.Domain.Games;
 
@@ -7,7 +6,7 @@ namespace Spurt.Domain.Categories.Commands;
 public class SaveCategory(
     IAddCategory addCategory,
     IUpdateCategory updateCategory,
-    IHubContext<GameHub>? hubContext = null) : ISaveCategory
+    IGameHubNotificationService gameHubNotificationService) : ISaveCategory
 {
     public async Task<Category> Execute(Category category, bool isSubmitting = false)
     {
@@ -33,8 +32,8 @@ public class SaveCategory(
         else
             savedCategory = await updateCategory.Execute(category);
 
-        if (category.IsSubmitted && hubContext != null && savedCategory.Player?.Game != null)
-            await hubContext.Clients.Group(savedCategory.Player.Game.Code).SendAsync(GameHub.Events.CategorySubmitted);
+        if (category.IsSubmitted && savedCategory.Player?.Game != null)
+            await gameHubNotificationService.NotifyCategorySubmitted(savedCategory.Player.Game.Code);
 
         return savedCategory;
     }

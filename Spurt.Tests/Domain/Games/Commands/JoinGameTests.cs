@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
 using NSubstitute;
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
@@ -23,7 +22,7 @@ public class JoinGameTests
     private readonly IGetGame _getGame;
     private readonly IGetUser _getUser;
     private readonly IAddPlayer _addPlayer;
-    private readonly IHubContext<GameHub> _hubContext;
+    private readonly IGameHubNotificationService _gameHubNotificationService;
     private readonly JoinGame _joinGame;
 
     public JoinGameTests()
@@ -58,9 +57,9 @@ public class JoinGameTests
         _getUser.Execute(_creatorUserId).Returns(_creatorUser);
 
         _addPlayer = Substitute.For<IAddPlayer>();
-        _hubContext = Substitute.For<IHubContext<GameHub>>();
+        _gameHubNotificationService = Substitute.For<IGameHubNotificationService>();
 
-        _joinGame = new JoinGame(_getGame, _getUser, _addPlayer, _hubContext);
+        _joinGame = new JoinGame(_getGame, _getUser, _addPlayer, _gameHubNotificationService);
     }
 
     [Fact]

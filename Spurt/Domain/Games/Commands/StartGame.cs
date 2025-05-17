@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
 
@@ -7,7 +6,7 @@ namespace Spurt.Domain.Games.Commands;
 public class StartGame(
     IGetGame getGame,
     IUpdateGame updateGame,
-    IHubContext<GameHub> hubContext) : IStartGame
+    IGameHubNotificationService gameHubNotificationService) : IStartGame
 {
     public async Task<Game> Execute(string gameCode, Guid userId)
     {
@@ -27,7 +26,7 @@ public class StartGame(
         game.CurrentChoosingPlayerId = creator.Id;
 
         await updateGame.Execute(game);
-        await hubContext.Clients.Group(gameCode).SendAsync(GameHub.Events.GameStarted);
+        await gameHubNotificationService.NotifyGameStarted(gameCode);
 
         return game;
     }
