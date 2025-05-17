@@ -6,8 +6,15 @@
             <div class="point-values">
                 @foreach (var clue in category.Clues.OrderBy(c => c.PointValue))
                 {
-                    <button @onclick="() => OnClueSelected.InvokeAsync(clue)"
-                            class="point-button">@clue.PointValue</button>
+                    @if (!clue.IsAnswered)
+                    {
+                        <button @onclick="() => OnClueSelected.InvokeAsync(clue)"
+                                class="point-button">@clue.PointValue</button>
+                    }
+                    else
+                    {
+                        <button disabled class="point-button point-button-answered">@clue.PointValue</button>
+                    }
                 }
             </div>
         </div>

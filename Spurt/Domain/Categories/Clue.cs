@@ -6,6 +6,7 @@ public class Clue
     public required string Answer { get; set; }
     public required string Question { get; set; }
     public required int PointValue { get; set; }
+    public bool IsAnswered { get; set; } = false;
 
     // Category relationship
     public required Guid CategoryId { get; set; }

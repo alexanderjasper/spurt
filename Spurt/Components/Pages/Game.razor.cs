@@ -13,6 +13,7 @@ public partial class Game(
     NavigationManager navigation,
     IGetGame getGame,
     IStartGame startGame,
+    ISelectClue selectClue,
     IGameHubConnectionService gameHubConnectionService) : IAsyncDisposable
 {
     [Parameter] public required string Code { get; init; }
@@ -87,10 +88,8 @@ public partial class Game(
 
     private async Task SelectClue(Clue clue)
     {
-        if (!gameHubConnectionService.IsConnected) return;
-
-        throw new NotImplementedException();
-        await LoadGameData();
+        if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
+        await selectClue.Execute(CurrentGame.Code, clue.Id);
     }
 
     private async Task OnCategorySaved()

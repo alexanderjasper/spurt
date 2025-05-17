@@ -1,7 +1,23 @@
 <div>
     <h3>Spillet er i gang</h3>
 
-    @if (CurrentPlayer != null && Game.CurrentChoosingPlayerId == CurrentPlayer.Id)
+    @if (SelectedClue != null)
+    {
+        <div class="selected-clue-container">
+            <h3>Valgt ledetråd:</h3>
+            <div class="selected-clue">
+                <h4>Svar:</h4>
+                <p>@SelectedClue.Answer</p>
+
+                @if (IsClueOwner(SelectedClue))
+                {
+                    <h4>Spørgsmål:</h4>
+                    <p>@SelectedClue.Question</p>
+                }
+            </div>
+        </div>
+    }
+    else if (CurrentPlayer != null && Game.CurrentChoosingPlayerId == CurrentPlayer.Id)
     {
         <div>
             <p>Det er din tur til at vælge en kategori og pointværdi!</p>

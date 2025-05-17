@@ -10,4 +10,11 @@ public partial class GameInProgressView
     [Parameter] public required Game Game { get; set; }
     [Parameter] public Player? CurrentPlayer { get; set; }
     [Parameter] public EventCallback<Clue> OnClueSelected { get; set; }
+
+    private bool IsClueOwner(Clue clue)
+    {
+        return CurrentPlayer?.Category?.Clues.Any(c => c.Id == clue.Id) ?? false;
+    }
+
+    private Clue? SelectedClue => Game.SelectedClue;
 }

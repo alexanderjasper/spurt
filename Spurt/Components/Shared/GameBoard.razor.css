@@ -18,4 +18,10 @@
 
 .point-button {
     padding: 0.5rem;
+}
+
+.point-button-answered {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
 } 

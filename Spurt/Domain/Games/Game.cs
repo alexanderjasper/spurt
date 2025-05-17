@@ -1,3 +1,4 @@
+using Spurt.Domain.Categories;
 using Spurt.Domain.Players;
 
 namespace Spurt.Domain.Games;
@@ -17,6 +18,8 @@ public class Game
     public List<Player> Players { get; set; } = [];
     public GameState State { get; set; } = GameState.WaitingForCategories;
     public Guid? CurrentChoosingPlayerId { get; set; }
+    public Clue? SelectedClue { get; set; }
+    public Guid? SelectedClueId { get; set; }
 
     public void ValidateCreator()
     {

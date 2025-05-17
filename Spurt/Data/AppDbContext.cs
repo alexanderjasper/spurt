@@ -53,6 +53,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasMany(g => g.Players)
             .WithOne(p => p.Game)
             .HasForeignKey(p => p.GameId);
+        modelBuilder.Entity<Game>()
+            .HasOne(g => g.SelectedClue)
+            .WithMany()
+            .HasForeignKey(g => g.SelectedClueId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
 
         modelBuilder.Entity<Category>()
             .HasKey(c => c.Id);

@@ -13,6 +13,7 @@ public class GetGame(AppDbContext dbContext) : IGetGame
             .Include(g => g.Players)
             .ThenInclude(p => p.Category)
             .ThenInclude(c => c!.Clues)
+            .Include(g => g.SelectedClue)
             .FirstOrDefaultAsync(g => g.Code == code);
     }
 }
