@@ -13,12 +13,12 @@ public partial class Game(
     ILocalStorageService localStorage,
     NavigationManager navigation,
     IGetGame getGame,
-    IStartGame startGame) : IAsyncDisposable
+    IStartGame startGame,
+    IGameHubConnectionService gameHubConnectionService) : IAsyncDisposable
 {
     [Parameter] public required string Code { get; init; }
 
     private Domain.Games.Game? CurrentGame { get; set; }
-    private HubConnection? _hubConnection;
     private Guid? _currentUserId;
     private Player? _currentPlayer;
     private bool _categorySubmitted;
@@ -36,31 +36,18 @@ public partial class Game(
             return;
         }
 
-        await InitializeSignalR();
+        await InitializeGameHub();
         await LoadGameData();
     }
 
-    private async Task InitializeSignalR()
+    private async Task InitializeGameHub()
     {
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(navigation.ToAbsoluteUri("/gamehub"))
-            .WithAutomaticReconnect()
-            .Build();
-
-        _hubConnection.On(GameHub.Events.PlayerJoined, async () => await LoadGameData());
-        _hubConnection.On(GameHub.Events.CategorySubmitted, async () => await LoadGameData());
-        _hubConnection.On(GameHub.Events.GameStarted, async () => await LoadGameData());
-        _hubConnection.On(GameHub.Events.ClueSelected, async () => await LoadGameData());
-
-        try
-        {
-            await _hubConnection.StartAsync();
-            await _hubConnection.SendAsync(GameHub.Methods.JoinGameGroup, Code);
-        }
-        catch
-        {
-            // Connection failed - game will still load but won't receive real-time updates
-        }
+        await gameHubConnectionService.Initialize(Code);
+        
+        gameHubConnectionService.RegisterOnPlayerJoined(LoadGameData);
+        gameHubConnectionService.RegisterOnCategorySubmitted(LoadGameData);
+        gameHubConnectionService.RegisterOnGameStarted(LoadGameData);
+        gameHubConnectionService.RegisterOnClueSelected(LoadGameData);
     }
 
     private async Task LoadGameData()
@@ -105,7 +92,7 @@ public partial class Game(
 
     private async Task SelectClue(Clue clue)
     {
-        if (_hubConnection == null) return;
+        if (!gameHubConnectionService.IsConnected) return;
 
         throw new NotImplementedException();
         await LoadGameData();
@@ -118,7 +105,7 @@ public partial class Game(
 
     public async ValueTask DisposeAsync()
     {
-        if (_hubConnection is not null) await _hubConnection.DisposeAsync();
+        await gameHubConnectionService.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 }

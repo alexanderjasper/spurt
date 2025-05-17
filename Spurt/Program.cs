@@ -30,6 +30,7 @@ builder.Services.Scan(scan => scan
 );
 
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<IGameHubConnectionService, GameHubConnectionService>();
 
 var app = builder.Build();
 
