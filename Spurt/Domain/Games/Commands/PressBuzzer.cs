@@ -17,41 +17,41 @@ public class PressBuzzer(
 
         try
         {
-        await gameLock.WaitAsync();
+            await gameLock.WaitAsync();
 
-        var game = await getGame.Execute(gameCode);
-        var untrackedGame = await getGame.Execute(gameCode, false);
+            var game = await getGame.Execute(gameCode);
+            var untrackedGame = await getGame.Execute(gameCode, false);
 
-        if (game == null || untrackedGame == null)
-            throw new InvalidOperationException($"Game with code {gameCode} not found.");
+            if (game == null || untrackedGame == null)
+                throw new InvalidOperationException($"Game with code {gameCode} not found.");
 
-        if (untrackedGame.State != GameState.ClueSelected && untrackedGame.State != GameState.BuzzerPressed)
-            throw new InvalidOperationException("Buzzer cannot be pressed in the current game state.");
+            if (untrackedGame.State != GameState.ClueSelected && untrackedGame.State != GameState.BuzzerPressed)
+                throw new InvalidOperationException("Buzzer cannot be pressed in the current game state.");
 
-        if (untrackedGame.SelectedClue == null)
-            throw new InvalidOperationException("No clue is currently selected.");
+            if (untrackedGame.SelectedClue == null)
+                throw new InvalidOperationException("No clue is currently selected.");
 
-        var player = untrackedGame.Players.FirstOrDefault(p => p.Id == playerId);
-        if (player == null)
-            throw new InvalidOperationException("Player not found in this game.");
+            var player = untrackedGame.Players.FirstOrDefault(p => p.Id == playerId);
+            if (player == null)
+                throw new InvalidOperationException("Player not found in this game.");
 
-        var clueCategory = untrackedGame.SelectedClue.Category;
-        if (clueCategory.PlayerId == player.Id)
-            throw new InvalidOperationException("You cannot buzz for your own clue.");
+            var clueCategory = untrackedGame.SelectedClue.Category;
+            if (clueCategory.PlayerId == player.Id)
+                throw new InvalidOperationException("You cannot buzz for your own clue.");
 
-        if (untrackedGame.BuzzedPlayerId != null) return game;
+            if (untrackedGame.BuzzedPlayerId != null) return game;
 
-        var buzzerTimestamp = DateTime.UtcNow;
+            var buzzerTimestamp = DateTime.UtcNow;
 
-        game.BuzzedPlayerId = player.Id;
-        game.BuzzedPlayer = player;
-        game.BuzzedTime = buzzerTimestamp;
-        game.State = GameState.BuzzerPressed;
+            game.BuzzedPlayerId = player.Id;
+            game.BuzzedPlayer = player;
+            game.BuzzedTime = buzzerTimestamp;
+            game.State = GameState.BuzzerPressed;
 
-        var result = await updateGame.Execute(game);
-        await notificationService.NotifyGameUpdated(result);
+            var result = await updateGame.Execute(game);
+            await notificationService.NotifyGameUpdated(result);
 
-        return result;
+            return result;
         }
         finally
         {
