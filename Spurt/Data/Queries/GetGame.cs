@@ -14,6 +14,7 @@ public class GetGame(AppDbContext dbContext) : IGetGame
             .ThenInclude(p => p.Category)
             .ThenInclude(c => c!.Clues)
             .Include(g => g.SelectedClue)
+            .Include(g => g.BuzzedPlayer)
             .FirstOrDefaultAsync(g => g.Code == code);
     }
 }

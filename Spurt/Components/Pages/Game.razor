@@ -35,6 +35,19 @@
                     CurrentPlayer="_currentPlayer"
                     OnClueSelected="SelectClue"/>
                 break;
+
+            case GameState.ClueSelected:
+                <ClueSelectedView
+                    Game="CurrentGame"
+                    CurrentPlayer="_currentPlayer"
+                    OnBuzz="PressBuzz"/>
+                break;
+
+            case GameState.BuzzerPressed:
+                <BuzzerPressedView
+                    Game="CurrentGame"
+                    CurrentPlayer="_currentPlayer"/>
+                break;
         }
     </div>
 }

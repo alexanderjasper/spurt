@@ -1,0 +1,33 @@
+.selected-clue-container {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selected-clue {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.point-value {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.answer {
+    font-size: 1.5rem;
+    margin: 20px 0;
+}
+
+.info-message {
+    background-color: #e8f4fd;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+} 

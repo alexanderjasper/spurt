@@ -1,0 +1,38 @@
+.buzzer-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.buzzer {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 160px;
+    height: 160px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+.buzzer:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.buzzer:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buzzer:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.disabled .buzzer {
+    opacity: 0.6;
+} 

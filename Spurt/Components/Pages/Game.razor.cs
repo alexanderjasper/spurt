@@ -14,6 +14,7 @@ public partial class Game(
     IGetGame getGame,
     IStartGame startGame,
     ISelectClue selectClue,
+    IPressBuzzer pressBuzzer,
     IGameHubConnectionService gameHubConnectionService) : IAsyncDisposable
 {
     [Parameter] public required string Code { get; init; }
@@ -90,6 +91,22 @@ public partial class Game(
     {
         if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
         await selectClue.Execute(CurrentGame.Code, clue.Id);
+    }
+
+    private async Task PressBuzz()
+    {
+        if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
+        if (_currentPlayer == null) throw new InvalidOperationException("Player not found");
+
+        try
+        {
+            ErrorMessage = null;
+            await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     private async Task OnCategorySaved()

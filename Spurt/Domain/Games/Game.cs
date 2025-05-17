@@ -7,6 +7,8 @@ public enum GameState
 {
     WaitingForCategories,
     InProgress,
+    ClueSelected,
+    BuzzerPressed,
     Finished,
 }
 
@@ -20,6 +22,9 @@ public class Game
     public Guid? CurrentChoosingPlayerId { get; set; }
     public Clue? SelectedClue { get; set; }
     public Guid? SelectedClueId { get; set; }
+    public Guid? BuzzedPlayerId { get; set; }
+    public Player? BuzzedPlayer { get; set; }
+    public DateTime? BuzzedTime { get; set; }
 
     public void ValidateCreator()
     {

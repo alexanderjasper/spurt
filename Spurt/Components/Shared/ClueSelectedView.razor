@@ -1,0 +1,21 @@
+<div class="selected-clue-container">
+    <h3>Valgt ledetråd:</h3>
+    <div class="selected-clue">
+        <h4>@Game.SelectedClue?.Category.Title</h4>
+        <p class="point-value">@Game.SelectedClue?.PointValue point</p>
+        <p class="answer">@Game.SelectedClue?.Answer</p>
+    </div>
+
+    @{
+        var isClueOwner = Game.SelectedClue?.Category.PlayerId == CurrentPlayer?.Id;
+    }
+
+    @if (!isClueOwner && Game.SelectedClue != null)
+    {
+        <BuzzerButton OnBuzz="OnBuzz" Disabled="false"/>
+    }
+    else if (isClueOwner)
+    {
+        <div class="info-message">Dette er din ledetråd. Vent på at andre spillere svarer.</div>
+    }
+</div> 

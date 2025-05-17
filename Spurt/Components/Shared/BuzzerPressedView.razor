@@ -1,0 +1,23 @@
+<div class="selected-clue-container">
+    <h3>Valgt ledetråd:</h3>
+    <div class="selected-clue">
+        <h4>@Game.SelectedClue?.Category.Title</h4>
+        <p class="point-value">@Game.SelectedClue?.PointValue point</p>
+        <p class="answer">@Game.SelectedClue?.Answer</p>
+    </div>
+
+    @if (Game.BuzzedPlayerId == CurrentPlayer?.Id)
+    {
+        <div class="buzzer-success">
+            <p>Du trykkede først på buzzeren!</p>
+            <p>Hvad er spørgsmålet?</p>
+        </div>
+    }
+    else
+    {
+        <div class="buzzer-waiting">
+            <p>@Game.BuzzedPlayer?.User.Name trykkede først på buzzeren.</p>
+            <p>Vent...</p>
+        </div>
+    }
+</div> 
