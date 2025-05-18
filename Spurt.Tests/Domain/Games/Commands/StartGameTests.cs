@@ -128,4 +128,115 @@ public class StartGameTests
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
         await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
+
+    [Fact]
+    public async Task Execute_WhenGameDoesNotExist_ThrowsException()
+    {
+        // Arrange
+        const string gameCode = "ABCD";
+        var userId = Guid.NewGuid();
+
+        _getGame.Execute(gameCode).Returns(Task.FromResult<Game?>(null));
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, userId));
+
+        Assert.Equal($"Game with code {gameCode} not found", exception.Message);
+    }
+
+    [Fact]
+    public async Task Execute_WhenUserIsNotCreator_ThrowsException()
+    {
+        // Arrange
+        const string gameCode = "ABCD";
+        var creatorId = Guid.NewGuid();
+        var nonCreatorId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Code = gameCode,
+        };
+
+        var creator = new Player
+        {
+            Id = Guid.NewGuid(),
+            UserId = creatorId,
+            User = new User { Id = creatorId, Name = "Creator" },
+            IsCreator = true,
+            Game = game,
+            GameId = game.Id,
+        };
+
+        game.Players = [creator];
+
+        _getGame.Execute(gameCode).Returns(game);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, nonCreatorId));
+
+        Assert.Equal("Only the game creator can start the game", exception.Message);
+    }
+
+    [Fact]
+    public async Task Execute_WhenNotAllPlayersSubmittedCategories_ThrowsException()
+    {
+        // Arrange
+        const string gameCode = "ABCD";
+        var creatorId = Guid.NewGuid();
+        var playerId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Code = gameCode,
+        };
+
+        var creator = new Player
+        {
+            Id = Guid.NewGuid(),
+            UserId = creatorId,
+            User = new User { Id = creatorId, Name = "Creator" },
+            IsCreator = true,
+            Game = game,
+            GameId = game.Id,
+        };
+
+        var player = new Player
+        {
+            Id = Guid.NewGuid(),
+            UserId = playerId,
+            User = new User { Id = playerId, Name = "Player" },
+            IsCreator = false,
+            Game = game,
+            GameId = game.Id,
+        };
+
+        // Creator submitted their category
+        var category1 = new Category
+        {
+            Title = "Category 1",
+            PlayerId = creator.Id,
+            Player = creator,
+            IsSubmitted = true,
+        };
+
+        // Player has not submitted their category
+        var category2 = new Category
+        {
+            Title = "Category 2",
+            PlayerId = player.Id,
+            Player = player,
+            IsSubmitted = false,
+        };
+
+        creator.Category = category1;
+        player.Category = category2;
+        game.Players = [creator, player];
+
+        _getGame.Execute(gameCode).Returns(game);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, creatorId));
+
+        Assert.Equal("All players must submit their categories before starting the game", exception.Message);
+    }
 }
