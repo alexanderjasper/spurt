@@ -8,11 +8,9 @@ public partial class CategoryEditor
 {
     [Parameter] public Guid PlayerId { get; set; }
     [Parameter] public Category? ExistingCategory { get; set; }
-    [Parameter] public EventCallback OnCategorySaved { get; set; }
 
     public required Category Category { get; set; }
     private bool IsEditing => ExistingCategory != null;
-    private string? ErrorMessage { get; set; }
 
     [Inject] private ISaveCategory SaveCategory { get; set; } = null!;
 
@@ -84,34 +82,11 @@ public partial class CategoryEditor
 
     private async Task SaveDraft()
     {
-        ErrorMessage = null;
-        try
-        {
-            await SaveCategory.Execute(Category);
-            await OnCategorySaved.InvokeAsync();
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
+        await SaveCategory.Execute(Category);
     }
 
     private async Task SubmitCategory()
     {
-        ErrorMessage = null;
-        try
-        {
-            await SaveCategory.Execute(Category, true);
-            await OnCategorySaved.InvokeAsync();
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-    }
-    
-    private void ClearError()
-    {
-        ErrorMessage = null;
+        await SaveCategory.Execute(Category, true);
     }
 }

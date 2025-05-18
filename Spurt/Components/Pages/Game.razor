@@ -11,18 +11,12 @@
 {
     <div>
         <p>Del denne kode med andre spillere, så de kan deltage i dit spil.</p>
-
-        <ErrorDisplay
-            ErrorMessage="@ErrorMessage"
-            OnErrorDismissed="ClearError"/>
-
         @switch (CurrentGame.State)
         {
             case GameState.WaitingForCategories:
                 <GameWaitingForCategoriesView
                     Game="CurrentGame"
                     CurrentPlayer="_currentPlayer"
-                    OnCategorySaved="OnCategorySaved"
                     OnStartGame="StartGame"/>
                 break;
 

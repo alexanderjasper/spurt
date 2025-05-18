@@ -24,7 +24,6 @@ public partial class Game(
     private Domain.Games.Game? CurrentGame { get; set; }
     private Guid? _currentUserId;
     private Player? _currentPlayer;
-    private string? ErrorMessage { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -74,20 +73,7 @@ public partial class Game(
     {
         if (_currentUserId == null) return;
 
-        try
-        {
-            ErrorMessage = null;
-            CurrentGame = await startGame.Execute(Code, _currentUserId.Value);
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-    }
-
-    private void ClearError()
-    {
-        ErrorMessage = null;
+        CurrentGame = await startGame.Execute(Code, _currentUserId.Value);
     }
 
     private async Task SelectClue(Clue clue)
@@ -101,20 +87,7 @@ public partial class Game(
         if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
         if (_currentPlayer == null) throw new InvalidOperationException("Player not found");
 
-        try
-        {
-            ErrorMessage = null;
-            await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
-    }
-
-    private async Task OnCategorySaved()
-    {
-        await LoadGameData();
+        await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
     }
 
     public async ValueTask DisposeAsync()

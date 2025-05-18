@@ -1,5 +1,3 @@
-@using Spurt.Components.Shared
-
 <div>
     <h3>@(IsEditing ? "Rediger kategori" : "Opret kategori")</h3>
 
@@ -37,8 +35,4 @@
                 disabled="@(!IsValid)">Indsend kategori
         </button>
     </div>
-
-    <ErrorDisplay 
-        ErrorMessage="@ErrorMessage"
-        OnErrorDismissed="ClearError" />
 </div>

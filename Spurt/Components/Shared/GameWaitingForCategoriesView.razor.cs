@@ -8,6 +8,5 @@ public partial class GameWaitingForCategoriesView
 {
     [Parameter] public required Game Game { get; set; }
     [Parameter] public Player? CurrentPlayer { get; set; }
-    [Parameter] public EventCallback OnCategorySaved { get; set; }
     [Parameter] public EventCallback OnStartGame { get; set; }
 }
