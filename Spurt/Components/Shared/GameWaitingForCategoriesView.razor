@@ -6,8 +6,18 @@
         @if (CurrentPlayer.IsCreator && Game.AllPlayersSubmittedCategories())
         {
             <div>
-                <h3>Alle spillere har indsendt deres kategorier!</h3>
-                <button @onclick="OnStartGame" class="button">Start spillet</button>
+                @if (Game.Players.Count < 2)
+                {
+                    <div class="alert alert-warning">
+                        <p>Mindst 2 spillere er påkrævet for at starte spillet. Inviter flere spillere til at
+                            deltage.</p>
+                    </div>
+                }
+                else
+                {
+                    <h3>Alle spillere har indsendt deres kategorier!</h3>
+                    <button @onclick="OnStartGame" class="button">Start spillet</button>
+                }
             </div>
         }
         else if (Game.AllPlayersSubmittedCategories())
