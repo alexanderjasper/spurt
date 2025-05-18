@@ -34,6 +34,8 @@ public class JudgeAnswer(
             if (playerToUpdate != null)
             {
                 playerToUpdate.Score += game.SelectedClue.PointValue;
+                // TODO: If BuzzedPlayer is the only one with remaining clues, select the lowest value clue from BuzzedPlayer
+                // TODO: If no clues left, progress to next game state
                 game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
                 game.SelectedClue.IsAnswered = true;
                 game.SelectedClue = null;

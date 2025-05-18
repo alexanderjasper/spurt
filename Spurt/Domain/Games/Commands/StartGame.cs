@@ -21,7 +21,7 @@ public class StartGame(
 
         if (!game.AllPlayersSubmittedCategories())
             throw new InvalidOperationException("All players must submit their categories before starting the game");
-            
+
         if (game.Players.Count < 2)
             throw new InvalidOperationException("At least 2 players are required to start the game");
 
