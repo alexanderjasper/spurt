@@ -28,7 +28,6 @@ input {
     width: 100%;
     max-width: 450px;
     text-align: center;
-    font-family: 'Covered By Your Grace', cursive;
 }
 
 @media (max-width: 768px) {

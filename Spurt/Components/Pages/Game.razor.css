@@ -24,7 +24,6 @@ p {
 }
 
 ::deep .point-button {
-    font-family: 'Amarante', serif;
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
