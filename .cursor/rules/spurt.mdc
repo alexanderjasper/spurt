@@ -22,7 +22,6 @@ Spurt is an online multiplayer game. It is loosely based on Jeopardy. After join
 - Always access Blazored.LocalStorage in OnAfterRenderAsync, never in OnInitializedAsync
 - For SignalR connections, set up in OnInitializedAsync but join groups after data is loaded
 - BlazoredLocalStorage uses JavaScript interop which is only available in OnAfterRenderAsync or event handlers
-- Don't make any styling. We are not in that phase yes. Keep it basic.
 - If you need to include styling, place it in a separate .razor.css file.
 - Reuse code elements. Avoid values and literal strings as much as possible.
 - Split into small classes.
