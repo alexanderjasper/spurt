@@ -28,16 +28,6 @@ h3 {
     margin: 0;
 }
 
-/* Override base button style with success variant */
-.button {
-    background-color: rgba(40, 167, 69, 0.3);
-    border: 2px solid rgba(40, 167, 69, 0.5);
-}
-
-.button:hover {
-    background-color: rgba(40, 167, 69, 0.5);
-}
-
 @media (max-width: 768px) {
     .alert {
         padding: 0.8rem;

@@ -139,6 +139,69 @@ input:focus, select:focus, textarea:focus {
     text-align: center;
 }
 
+/* Button Styles */
+button, .btn {
+    font-family: var(--font-headings);
+    background-color: var(--color-success);
+    color: var(--color-light);
+    border: var(--border-width-md) solid rgba(40, 167, 69, 0.5);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    min-width: 120px;
+}
+
+button:hover, .btn:hover {
+    background-color: rgba(40, 167, 69, 0.8);
+    transform: scale(1.02);
+}
+
+button:disabled, .btn:disabled {
+    background-color: var(--color-disabled);
+    border-color: var(--color-disabled-border);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary-dark);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger-hover);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.btn-small {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    min-width: 80px;
+}
+
+.btn-large {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-md);
+    min-width: 160px;
+}
+
+.btn-full {
+    width: 100%;
+}
+
 /* Utility Classes */
 .text-center {
     text-align: center;

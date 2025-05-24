@@ -19,14 +19,14 @@
             else
             {
                 <div class="text-center">
-                    <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
+                    <button @onclick="CreateNewGame" class="btn btn-large">Opret Nyt Spil</button>
                 </div>
 
                 <div class="text-center">
                     <h3>Eller deltag i et eksisterende spil</h3>
                     <div class="flex-container flex-column flex-center">
                         <input @bind="GameCode" placeholder="Indtast spilkode" class="input"/>
-                        <button @onclick="JoinGame" class="button">Deltag</button>
+                        <button @onclick="JoinGame" class="btn">Deltag</button>
                     </div>
                 </div>
             }
