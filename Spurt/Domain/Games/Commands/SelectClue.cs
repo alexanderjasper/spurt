@@ -4,8 +4,8 @@ using Spurt.Data.Queries;
 namespace Spurt.Domain.Games.Commands;
 
 public class SelectClue(
-    IGetGame getGame, 
-    IGetClue getClue, 
+    IGetGame getGame,
+    IGetClue getClue,
     IUpdateGame updateGame,
     IGameHubNotificationService notificationService) : ISelectClue
 {

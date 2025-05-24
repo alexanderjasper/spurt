@@ -33,7 +33,7 @@ public class JudgeAnswerTests
         {
             Id = Guid.NewGuid(),
             Code = gameCode,
-            State = GameState.BuzzerPressed
+            State = GameState.BuzzerPressed,
         };
 
         var player1 = new Player
@@ -43,7 +43,7 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
 
         var player2 = new Player
@@ -53,7 +53,7 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
 
         var category = new Category
@@ -62,7 +62,7 @@ public class JudgeAnswerTests
             Title = "Test Category",
             PlayerId = clueOwnerId,
             Player = player2,
-            Clues = []
+            Clues = [],
         };
 
         // Add the clue that will be answered
@@ -100,7 +100,8 @@ public class JudgeAnswerTests
 
         // Mock return values
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
-        _updateGame.Execute(Arg.Any<Game>()).Returns(args => {
+        _updateGame.Execute(Arg.Any<Game>()).Returns(args =>
+        {
             // Ensure the mock returns the updated game state with the second clue still unanswered
             var updatedGame = (Game)args[0];
             return updatedGame;
@@ -144,7 +145,7 @@ public class JudgeAnswerTests
             Id = Guid.NewGuid(),
             Code = gameCode,
             State = GameState.BuzzerPressed,
-            CurrentChoosingPlayerId = originalChoosingPlayerId
+            CurrentChoosingPlayerId = originalChoosingPlayerId,
         };
 
         var player1 = new Player
@@ -154,7 +155,7 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
 
         var player2 = new Player
@@ -164,7 +165,7 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
 
         var category = new Category
@@ -172,7 +173,7 @@ public class JudgeAnswerTests
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = clueOwnerId,
-            Player = player2
+            Player = player2,
         };
 
         var clue = new Clue
@@ -182,7 +183,7 @@ public class JudgeAnswerTests
             Answer = "Test Answer",
             Question = "Test Question",
             CategoryId = category.Id,
-            Category = category
+            Category = category,
         };
 
         game.Players = [player1, player2];
@@ -232,7 +233,7 @@ public class JudgeAnswerTests
         {
             Id = Guid.NewGuid(),
             Code = gameCode,
-            State = GameState.BuzzerPressed
+            State = GameState.BuzzerPressed,
         };
 
         var player = new Player
@@ -241,7 +242,7 @@ public class JudgeAnswerTests
             User = new User { Name = "Player" },
             UserId = Guid.NewGuid(),
             Game = game,
-            GameId = game.Id
+            GameId = game.Id,
         };
 
         var category = new Category
@@ -249,7 +250,7 @@ public class JudgeAnswerTests
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = clueOwnerId,
-            Player = player
+            Player = player,
         };
 
         var clue = new Clue
@@ -259,7 +260,7 @@ public class JudgeAnswerTests
             Answer = "Test Answer",
             Question = "Test Question",
             CategoryId = category.Id,
-            Category = category
+            Category = category,
         };
 
         game.SelectedClue = clue;
@@ -269,8 +270,8 @@ public class JudgeAnswerTests
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await _sut.Execute(gameCode, nonClueOwnerId, true));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await _sut.Execute(gameCode, nonClueOwnerId, true));
     }
 
     [Fact]
@@ -283,21 +284,21 @@ public class JudgeAnswerTests
         var game = new Game
         {
             Code = gameCode,
-            State = GameState.InProgress
+            State = GameState.InProgress,
         };
 
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await _sut.Execute(gameCode, clueOwnerId, true));
+        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await _sut.Execute(gameCode, clueOwnerId, true));
     }
 
     [Fact]
     public async Task Execute_WhenAllCluesAreAnswered_TransitionsToFinishedState()
     {
         // Arrange
-        var gameCode = "ABCD";
+        const string gameCode = "ABCD";
         var clueOwnerId = Guid.NewGuid();
         var buzzedPlayerId = Guid.NewGuid();
 
@@ -305,7 +306,7 @@ public class JudgeAnswerTests
         {
             Id = Guid.NewGuid(),
             Code = gameCode,
-            State = GameState.BuzzerPressed
+            State = GameState.BuzzerPressed,
         };
         var player1 = new Player
         {
@@ -314,7 +315,7 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
         var player2 = new Player
         {
@@ -323,14 +324,14 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            AnsweredClues = []
+            AnsweredClues = [],
         };
         var category = new Category
         {
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = clueOwnerId,
-            Player = player2
+            Player = player2,
         };
         var clue = new Clue
         {

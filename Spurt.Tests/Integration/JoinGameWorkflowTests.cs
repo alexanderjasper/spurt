@@ -2,8 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
-using Spurt.Domain.Players;
-using Spurt.Domain.Users;
 using Spurt.Domain.Users.Commands;
 
 // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
@@ -13,19 +11,19 @@ namespace Spurt.Tests.Integration;
 public class JoinGameWorkflowTests
 {
     private readonly TestDbContextFixture _fixture = new();
-    
+
     [Fact]
     public async Task CompleteJoinGameWorkflow_Success()
     {
         // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-        
+
         // Get real implementations from service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var joinGame = testEnv.ServiceProvider.GetRequiredService<JoinGame>();
         var gameHubNotificationService = testEnv.ServiceProvider.GetRequiredService<IGameHubNotificationService>();
-        
+
         // Clear any previous notification calls
         gameHubNotificationService.ClearReceivedCalls();
 
@@ -45,7 +43,7 @@ public class JoinGameWorkflowTests
         Assert.Equal(2, updatedGame.Players.Count);
         Assert.Single(updatedGame.Players, p => p.UserId == user1.Id && p.IsCreator);
         Assert.Single(updatedGame.Players, p => p.UserId == user2.Id && !p.IsCreator);
-        
+
         // Verify the notification service was called
         await gameHubNotificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
@@ -55,24 +53,24 @@ public class JoinGameWorkflowTests
     {
         // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-        
+
         // Get real implementations from service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var joinGame = testEnv.ServiceProvider.GetRequiredService<JoinGame>();
         var gameHubNotificationService = testEnv.ServiceProvider.GetRequiredService<IGameHubNotificationService>();
-        
+
         // Setup: Create a user and a game, and have the user join
         var user1 = await registerUser.Execute("User 1");
         var user2 = await registerUser.Execute("User 2");
         var game = await createGame.Execute(user1.Id);
-        
+
         // User2 joins the game
         var gameAfterFirstJoin = await joinGame.Execute(game.Code, user2.Id);
-        
+
         // Reset the notification service call count
         gameHubNotificationService.ClearReceivedCalls();
-        
+
         // User2 tries to join the game again
         var gameAfterSecondJoin = await joinGame.Execute(game.Code, user2.Id);
 
@@ -90,14 +88,14 @@ public class JoinGameWorkflowTests
     {
         // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-        
+
         // Get real implementations from service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var joinGame = testEnv.ServiceProvider.GetRequiredService<JoinGame>();
-        
+
         // Create a user but no game
         var user = await registerUser.Execute("User 2");
-        
+
         const string invalidGameCode = "INVALID";
 
         // Try to join a non-existent game

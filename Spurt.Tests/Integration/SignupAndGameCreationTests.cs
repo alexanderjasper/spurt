@@ -1,7 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
-using Spurt.Domain.Users;
 using Spurt.Domain.Users.Commands;
 
 namespace Spurt.Tests.Integration;
@@ -15,7 +13,7 @@ public class SignupAndGameCreationTests
     {
         // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-        
+
         // Get real implementations from the test environment's service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
@@ -27,7 +25,7 @@ public class SignupAndGameCreationTests
         // Verify user was created with the correct name
         Assert.NotNull(user);
         Assert.Equal(userName, user.Name);
-        
+
         // Verify the user exists in the database
         var dbUser = await testEnv.DbContext.Users.FindAsync(user.Id);
         Assert.NotNull(dbUser);
@@ -40,7 +38,7 @@ public class SignupAndGameCreationTests
         var dbGame = await testEnv.DbContext.Games.FindAsync(game.Id);
         Assert.NotNull(dbGame);
         Assert.Equal(game.Code, dbGame.Code);
-        
+
         // Verify a Player was created for the User
         Assert.Single(game.Players);
         Assert.Equal(user.Id, game.Players[0].UserId);

@@ -1,6 +1,6 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using System.Text.Json.Serialization;
 
 namespace Spurt.Domain.Games;
 

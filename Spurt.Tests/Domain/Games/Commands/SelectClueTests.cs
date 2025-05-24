@@ -28,81 +28,78 @@ public class SelectClueTests
         // Arrange
         const string gameCode = "ABCD";
         var clueId = Guid.NewGuid();
-        
+
         _getGame.Execute(gameCode).Returns(Task.FromResult<Game?>(null));
-        
+
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _sut.Execute(gameCode, clueId));
-        
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, clueId));
+
         Assert.Equal("Spillet findes ikke", exception.Message);
     }
-    
+
     [Fact]
     public async Task Execute_WhenGameNotInProgress_ThrowsException()
     {
         // Arrange
         const string gameCode = "ABCD";
         var clueId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Code = gameCode,
-            State = GameState.WaitingForCategories
+            State = GameState.WaitingForCategories,
         };
-        
+
         _getGame.Execute(gameCode).Returns(game);
-        
+
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _sut.Execute(gameCode, clueId));
-        
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, clueId));
+
         Assert.Equal("Spillet er ikke i gang", exception.Message);
     }
-    
+
     [Fact]
     public async Task Execute_WhenClueDoesNotExist_ThrowsException()
     {
         // Arrange
         const string gameCode = "ABCD";
         var clueId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Code = gameCode,
-            State = GameState.InProgress
+            State = GameState.InProgress,
         };
-        
+
         _getGame.Execute(gameCode).Returns(game);
         _getClue.Execute(clueId).Returns(Task.FromResult<Clue?>(null));
-        
+
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _sut.Execute(gameCode, clueId));
-        
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, clueId));
+
         Assert.Equal("Ledetråden er allerede besvaret", exception.Message);
     }
-    
+
     [Fact]
     public async Task Execute_WhenClueIsAlreadyAnswered_ThrowsException()
     {
         // Arrange
         const string gameCode = "ABCD";
         var clueId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Code = gameCode,
-            State = GameState.InProgress
+            State = GameState.InProgress,
         };
-        
+
         var player = new Player
         {
             Id = Guid.NewGuid(),
             User = new User { Name = "Player" },
             UserId = Guid.NewGuid(),
             Game = game,
-            GameId = game.Id
+            GameId = game.Id,
         };
         var player2 = new Player
         {
@@ -110,14 +107,14 @@ public class SelectClueTests
             User = new User { Name = "Player 2" },
             UserId = Guid.NewGuid(),
             Game = game,
-            GameId = game.Id
+            GameId = game.Id,
         };
         var category = new Category
         {
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = player.Id,
-            Player = player
+            Player = player,
         };
         var clue = new Clue
         {
@@ -130,47 +127,46 @@ public class SelectClueTests
             AnsweredByPlayer = player2,
             AnsweredByPlayerId = player2.Id,
         };
-        
+
         _getGame.Execute(gameCode).Returns(game);
         _getClue.Execute(clueId).Returns(clue);
-        
+
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => _sut.Execute(gameCode, clueId));
-        
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.Execute(gameCode, clueId));
+
         Assert.Equal("Ledetråden er allerede besvaret", exception.Message);
     }
-    
+
     [Fact]
     public async Task Execute_WhenClueIsValid_SelectsClue()
     {
         // Arrange
         const string gameCode = "ABCD";
         var clueId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Code = gameCode,
-            State = GameState.InProgress
+            State = GameState.InProgress,
         };
-        
+
         var player = new Player
         {
             Id = Guid.NewGuid(),
             User = new User { Name = "Player" },
             UserId = Guid.NewGuid(),
             Game = game,
-            GameId = game.Id
+            GameId = game.Id,
         };
-        
+
         var category = new Category
         {
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = player.Id,
-            Player = player
+            Player = player,
         };
-        
+
         var clue = new Clue
         {
             Id = clueId,
@@ -180,20 +176,20 @@ public class SelectClueTests
             CategoryId = category.Id,
             Category = category,
         };
-        
+
         _getGame.Execute(gameCode).Returns(game);
         _getClue.Execute(clueId).Returns(clue);
         _updateGame.Execute(Arg.Any<Game>()).Returns(game);
-        
+
         // Act
         var result = await _sut.Execute(gameCode, clueId);
-        
+
         // Assert
         Assert.Equal(GameState.ClueSelected, result.State);
         Assert.Equal(clueId, result.SelectedClueId);
         Assert.Equal(clue, result.SelectedClue);
-        
+
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
         await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
-} 
+}

@@ -1,6 +1,5 @@
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
-using System.Linq;
 using Spurt.Domain.Categories;
 
 namespace Spurt.Domain.Games.Commands;
@@ -38,31 +37,17 @@ public class JudgeAnswer(
                 game.SelectedClue.AnsweredByPlayerId = buzzedPlayer.Id;
                 game.SelectedClue.AnsweredByPlayer = buzzedPlayer;
                 buzzedPlayer.AnsweredClues.Add(game.SelectedClue);
-                
+
                 // TODO: If BuzzedPlayer is the only one with remaining clues, select the lowest value clue from BuzzedPlayer
                 // TODO: If no clues left, progress to next game state
                 game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
 
                 var allClues = new List<Clue>();
                 foreach (var player in game.Players)
-                {
                     if (player.Category != null)
-                    {
-                        allClues.AddRange(player.Category.Clues);
-                    }
-                }
-                
-                bool allAnswered = true;
-                foreach (var c in allClues)
-                {
-                    if (!c.IsAnswered)
-                    {
-                        allAnswered = false;
-                        break;
-                    }
-                }
-                
-                if (allAnswered)
+                        allClues.AddRange(player.Category!.Clues);
+
+                if (allClues.All(c => c.IsAnswered))
                 {
                     game.State = GameState.Finished;
                 }
@@ -71,7 +56,7 @@ public class JudgeAnswer(
                     game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
                     game.State = GameState.InProgress;
                 }
-                
+
                 game.SelectedClue = null;
                 game.SelectedClueId = null;
             }
