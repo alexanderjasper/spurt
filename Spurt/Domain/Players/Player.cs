@@ -13,5 +13,10 @@ public class Player
     public required Game Game { get; set; }
     public required Guid GameId { get; set; }
     public Category? Category { get; set; }
-    public int Score { get; set; } = 0;
+    public ICollection<Clue> AnsweredClues { get; set; } = [];
+
+    public int GetScore()
+    {
+        return AnsweredClues.Sum(c => c.PointValue);
+    }
 }

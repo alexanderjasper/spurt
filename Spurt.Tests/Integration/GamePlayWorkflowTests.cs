@@ -52,7 +52,7 @@ public class GamePlayWorkflowTests
 
         // Verify player 3 got points and now has control
         Assert.Equal(GameState.InProgress, game.State);
-        Assert.Equal(100, player3.Score);
+        Assert.Equal(100, player3.GetScore());
         Assert.Equal(player3.Id, game.CurrentChoosingPlayerId);
         Assert.Null(game.SelectedClue);
         Assert.Null(game.BuzzedPlayerId);
@@ -90,7 +90,7 @@ public class GamePlayWorkflowTests
 
         // Verify:
         Assert.Equal(GameState.ClueSelected, game.State);
-        Assert.Equal(0, player3.Score);
+        Assert.Equal(0, player3.GetScore());
         Assert.Equal(creatorPlayer.Id, game.CurrentChoosingPlayerId);
         Assert.Null(game.BuzzedPlayerId);
     }
@@ -184,9 +184,9 @@ public class GamePlayWorkflowTests
         game = await judgeAnswer.Execute(game.Code, player2.Id, true);
 
         // After first round: player 3 has 100 points and has control
-        Assert.Equal(0, player1.Score);
-        Assert.Equal(0, player2.Score);
-        Assert.Equal(100, player3.Score);
+        Assert.Equal(0, player1.GetScore());
+        Assert.Equal(0, player2.GetScore());
+        Assert.Equal(100, player3.GetScore());
 
         // Step 2: Now player 3 selects a clue
         game = await selectClue.Execute(game.Code, clue2.Id);
@@ -198,9 +198,9 @@ public class GamePlayWorkflowTests
         game = await judgeAnswer.Execute(game.Code, player3.Id, true);
 
         // Verify final scores
-        Assert.Equal(100, player1.Score);
-        Assert.Equal(0, player2.Score);
-        Assert.Equal(100, player3.Score);
+        Assert.Equal(100, player1.GetScore());
+        Assert.Equal(0, player2.GetScore());
+        Assert.Equal(100, player3.GetScore());
         Assert.Equal(player1.Id, game.CurrentChoosingPlayerId);
     }
 }

@@ -28,14 +28,14 @@ public class JudgeAnswerTests
         var gameCode = "ABCD";
         var clueOwnerId = Guid.NewGuid();
         var buzzedPlayerId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Id = Guid.NewGuid(),
             Code = gameCode,
             State = GameState.BuzzerPressed
         };
-        
+
         var player1 = new Player
         {
             Id = buzzedPlayerId,
@@ -43,9 +43,9 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            Score = 0
+            AnsweredClues = []
         };
-        
+
         var player2 = new Player
         {
             Id = clueOwnerId,
@@ -53,9 +53,9 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            Score = 0
+            AnsweredClues = []
         };
-        
+
         var category = new Category
         {
             Id = Guid.NewGuid(),
@@ -63,7 +63,7 @@ public class JudgeAnswerTests
             PlayerId = clueOwnerId,
             Player = player2
         };
-        
+
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
@@ -73,14 +73,14 @@ public class JudgeAnswerTests
             CategoryId = category.Id,
             Category = category
         };
-        
+
         game.Players = [player1, player2];
         game.SelectedClue = clue;
         game.SelectedClueId = clue.Id;
         game.BuzzedPlayerId = buzzedPlayerId;
         game.BuzzedPlayer = player1;
         game.BuzzedTime = DateTime.UtcNow;
-        
+
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
         _updateGame.Execute(Arg.Any<Game>()).Returns(game);
 
@@ -91,23 +91,23 @@ public class JudgeAnswerTests
         Assert.Equal(GameState.InProgress, result.State);
         Assert.Null(result.BuzzedPlayerId);
 
-        // Verify the buzzed player got points
+        // Verify the buzzed player got the clue and points
         var updatedPlayer = result.Players.First(p => p.Id == buzzedPlayerId);
-        Assert.Equal(200, updatedPlayer.Score);
-        
+        Assert.Equal(200, updatedPlayer.GetScore());
+
         // Verify the buzzer state was reset
         Assert.Null(result.BuzzedPlayerId);
         Assert.Null(result.BuzzedPlayer);
         Assert.Null(result.BuzzedTime);
-        
+
         // Verify the next player choosing is the one who buzzed
         Assert.Equal(buzzedPlayerId, result.CurrentChoosingPlayerId);
-        
+
         // Verify game was updated and notification was sent
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
         await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
-    
+
     [Fact]
     public async Task Execute_WhenAnswerIsIncorrect_DoesNotAwardPoints()
     {
@@ -116,7 +116,7 @@ public class JudgeAnswerTests
         var clueOwnerId = Guid.NewGuid();
         var buzzedPlayerId = Guid.NewGuid();
         var originalChoosingPlayerId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Id = Guid.NewGuid(),
@@ -124,7 +124,7 @@ public class JudgeAnswerTests
             State = GameState.BuzzerPressed,
             CurrentChoosingPlayerId = originalChoosingPlayerId
         };
-        
+
         var player1 = new Player
         {
             Id = buzzedPlayerId,
@@ -132,9 +132,9 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            Score = 0
+            AnsweredClues = []
         };
-        
+
         var player2 = new Player
         {
             Id = clueOwnerId,
@@ -142,9 +142,9 @@ public class JudgeAnswerTests
             UserId = Guid.NewGuid(),
             Game = game,
             GameId = game.Id,
-            Score = 0
+            AnsweredClues = []
         };
-        
+
         var category = new Category
         {
             Id = Guid.NewGuid(),
@@ -152,7 +152,7 @@ public class JudgeAnswerTests
             PlayerId = clueOwnerId,
             Player = player2
         };
-        
+
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
@@ -162,14 +162,14 @@ public class JudgeAnswerTests
             CategoryId = category.Id,
             Category = category
         };
-        
+
         game.Players = [player1, player2];
         game.SelectedClue = clue;
         game.SelectedClueId = clue.Id;
         game.BuzzedPlayerId = buzzedPlayerId;
         game.BuzzedPlayer = player1;
         game.BuzzedTime = DateTime.UtcNow;
-        
+
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
         _updateGame.Execute(Arg.Any<Game>()).Returns(game);
 
@@ -178,24 +178,25 @@ public class JudgeAnswerTests
 
         // Assert
         Assert.Equal(GameState.ClueSelected, result.State);
-        
+
         // Verify the buzzed player didn't get points
         var updatedPlayer = result.Players.First(p => p.Id == buzzedPlayerId);
-        Assert.Equal(0, updatedPlayer.Score);
-        
+        Assert.Equal(0, updatedPlayer.GetScore());
+        Assert.Empty(updatedPlayer.AnsweredClues);
+
         // Verify the buzzer state was reset
         Assert.Null(result.BuzzedPlayerId);
         Assert.Null(result.BuzzedPlayer);
         Assert.Null(result.BuzzedTime);
-        
+
         // Verify the next player choosing remains the original
         Assert.Equal(originalChoosingPlayerId, result.CurrentChoosingPlayerId);
-        
+
         // Verify game was updated and notification was sent
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
         await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
-    
+
     [Fact]
     public async Task Execute_WhenPlayerIsNotClueOwner_ThrowsException()
     {
@@ -204,14 +205,14 @@ public class JudgeAnswerTests
         var clueOwnerId = Guid.NewGuid();
         var nonClueOwnerId = Guid.NewGuid();
         var buzzedPlayerId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Id = Guid.NewGuid(),
             Code = gameCode,
             State = GameState.BuzzerPressed
         };
-        
+
         var player = new Player
         {
             Id = clueOwnerId,
@@ -220,7 +221,7 @@ public class JudgeAnswerTests
             Game = game,
             GameId = game.Id
         };
-        
+
         var category = new Category
         {
             Id = Guid.NewGuid(),
@@ -228,7 +229,7 @@ public class JudgeAnswerTests
             PlayerId = clueOwnerId,
             Player = player
         };
-        
+
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
@@ -238,35 +239,35 @@ public class JudgeAnswerTests
             CategoryId = category.Id,
             Category = category
         };
-        
+
         game.SelectedClue = clue;
         game.SelectedClueId = clue.Id;
         game.BuzzedPlayerId = buzzedPlayerId;
-        
+
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
             async () => await _sut.Execute(gameCode, nonClueOwnerId, true));
     }
-    
+
     [Fact]
     public async Task Execute_WhenGameStateIsNotBuzzerPressed_ThrowsException()
     {
         // Arrange
         var gameCode = "ABCD";
         var clueOwnerId = Guid.NewGuid();
-        
+
         var game = new Game
         {
             Code = gameCode,
             State = GameState.InProgress
         };
-        
+
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
             async () => await _sut.Execute(gameCode, clueOwnerId, true));
     }
-} 
+}

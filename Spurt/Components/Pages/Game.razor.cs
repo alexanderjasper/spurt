@@ -9,7 +9,6 @@ using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
-// TODO: Add a scoring history to show how each player earned their points. Perhaps store it on the clue? Or a game log?
 // TODO: Game completed state.
 // TODO: Add negative scoring if no one can answer the question
 // TODO: Add an option to leave the game (confirmation dialog)

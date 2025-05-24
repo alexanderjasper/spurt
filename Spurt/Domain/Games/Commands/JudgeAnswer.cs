@@ -30,10 +30,13 @@ public class JudgeAnswer(
 
         if (isCorrect)
         {
-            var playerToUpdate = game.Players.FirstOrDefault(p => p.Id == game.BuzzedPlayerId);
-            if (playerToUpdate != null)
+            var buzzedPlayer = game.Players.FirstOrDefault(p => p.Id == game.BuzzedPlayerId);
+            if (buzzedPlayer != null)
             {
-                playerToUpdate.Score += game.SelectedClue.PointValue;
+                game.SelectedClue.AnsweredByPlayerId = buzzedPlayer.Id;
+                game.SelectedClue.AnsweredByPlayer = buzzedPlayer;
+                buzzedPlayer.AnsweredClues.Add(game.SelectedClue);
+                
                 // TODO: If BuzzedPlayer is the only one with remaining clues, select the lowest value clue from BuzzedPlayer
                 // TODO: If no clues left, progress to next game state
                 game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
