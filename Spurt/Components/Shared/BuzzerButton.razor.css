@@ -1,38 +1,73 @@
-.buzzer-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
+/* BuzzerButton Component
+   ========================================================================== */
 
 .buzzer {
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 160px;
-    height: 160px;
-    font-size: 24px;
+    /* Block */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    height: 180px;
+    margin: var(--spacing-xl) auto;
+
+    /* Visual */
+    background-color: var(--color-danger);
+    color: var(--color-light);
+    border: var(--border-width-lg) solid var(--color-light-transparent);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg), var(--shadow-inner);
+
+    /* Typography */
+    font-size: var(--font-size-lg);
     font-weight: bold;
+    font-family: var(--font-headings);
+    text-shadow: var(--text-shadow);
+
+    /* Behavior */
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s;
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
 }
 
+.buzzer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    border-radius: var(--border-radius-lg);
+}
+
+/* Element/Modifier states */
 .buzzer:hover:not(:disabled) {
     transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), var(--shadow-inner);
+    background-color: var(--color-danger-hover);
 }
 
 .buzzer:active:not(:disabled) {
     transform: scale(0.95);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-sm), var(--shadow-inner);
 }
 
 .buzzer:disabled {
-    background-color: #cccccc;
+    background-color: var(--color-disabled);
     cursor: not-allowed;
+    border-color: var(--color-disabled-border);
 }
 
-.disabled .buzzer {
+.buzzer--disabled {
     opacity: 0.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .buzzer {
+        width: 150px;
+        height: 150px;
+        font-size: var(--font-size-md);
+    }
 } 

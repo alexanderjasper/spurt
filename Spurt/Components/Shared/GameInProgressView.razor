@@ -20,7 +20,7 @@
     else if (CurrentPlayer != null && Game.CurrentChoosingPlayerId == CurrentPlayer.Id)
     {
         <div>
-            <p>Det er din tur til at vælge en kategori og pointværdi!</p>
+            <p class="your-turn">Det er din tur til at vælge en kategori og pointværdi!</p>
 
             <GameBoard
                 Categories="Game.Players.Select(p => p.Category!)"
@@ -29,8 +29,11 @@
     }
     else
     {
-        <p>Venter på
-            at @Game.Players.FirstOrDefault(p => p.Id == Game.CurrentChoosingPlayerId)?.User.Name vælger
-            en kategori og pointværdi...</p>
+        <p class="waiting-message">
+            Venter på at
+            <span
+                class="player-name">@Game.Players.FirstOrDefault(p => p.Id == Game.CurrentChoosingPlayerId)?.User.Name</span>
+            vælger en kategori og pointværdi...
+        </p>
     }
 </div> 

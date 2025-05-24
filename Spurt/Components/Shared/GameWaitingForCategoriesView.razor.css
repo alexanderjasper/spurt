@@ -1,0 +1,46 @@
+div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem auto;
+    max-width: 800px;
+}
+
+h3 {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.alert {
+    background-color: rgba(255, 193, 7, 0.2);
+    border: 2px solid rgba(255, 193, 7, 0.4);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.alert p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Override base button style with success variant */
+.button {
+    background-color: rgba(40, 167, 69, 0.3);
+    border: 2px solid rgba(40, 167, 69, 0.5);
+}
+
+.button:hover {
+    background-color: rgba(40, 167, 69, 0.5);
+}
+
+@media (max-width: 768px) {
+    .alert {
+        padding: 0.8rem;
+        margin: 0.8rem 0;
+    }
+} 

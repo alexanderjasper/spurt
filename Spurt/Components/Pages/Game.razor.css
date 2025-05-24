@@ -1,0 +1,91 @@
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    text-align: center;
+    width: 100%;
+}
+
+p {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    width: 100%;
+}
+
+.game-code {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+::deep .point-button {
+    font-family: 'Amarante', serif;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+}
+
+::deep .point-button:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+::deep .selected-clue {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    margin: 0 auto;
+    max-width: 90%;
+}
+
+::deep .category {
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+::deep .button {
+    font-family: 'Amarante', serif;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0.5rem auto;
+    display: block;
+}
+
+::deep .button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .game-code {
+        font-size: 1.1rem;
+    }
+
+    ::deep .button {
+        width: 80%;
+        margin: 0.5rem auto;
+    }
+
+    ::deep .selected-clue {
+        width: 95%;
+        padding: 0.5rem;
+    }
+} 

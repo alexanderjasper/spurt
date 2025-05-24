@@ -1,58 +1,245 @@
+/* Variables */
+:root {
+    /* Colors */
+    --color-primary: #5ca8e0;
+    --color-primary-dark: #1b6ec2;
+    --color-primary-darker: #1861ac;
+    --color-light: #ffffff;
+    --color-light-transparent: rgba(255, 255, 255, 0.3);
+    --color-light-transparent-hover: rgba(255, 255, 255, 0.4);
+    --color-light-text: #f0f0f0;
+    --color-dark: rgba(0, 0, 0, 0.5);
+    --color-dark-transparent: rgba(0, 0, 0, 0.4);
+    --color-dark-transparent-light: rgba(0, 0, 0, 0.3);
+    --color-success: rgba(40, 167, 69, 0.7);
+    --color-danger: rgba(220, 53, 69, 0.7);
+    --color-danger-hover: rgba(220, 53, 69, 0.8);
+    --color-disabled: rgba(150, 150, 150, 0.5);
+    --color-disabled-border: rgba(200, 200, 200, 0.3);
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.8rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+
+    /* Typography */
+    --font-primary: "Covered By Your Grace", cursive;
+    --font-headings: 'Amarante', serif;
+    --font-size-xs: 0.9rem;
+    --font-size-sm: 1.1rem;
+    --font-size-md: 1.3rem;
+    --font-size-lg: 1.8rem;
+    --font-size-xl: 2.2rem;
+    --font-size-xxl: 3rem;
+    --font-size-huge: 4rem;
+
+    /* Borders */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 50%;
+    --border-width: 1px;
+    --border-width-md: 2px;
+    --border-width-lg: 3px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 4px 15px rgba(0, 0, 0, 0.3);
+    --shadow-inner: inset 0 0 20px rgba(0, 0, 0, 0.2);
+    --text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    --text-shadow-lg: 2px 2px 4px rgba(0, 0, 0, 0.7);
+
+    /* Animations */
+    --transition-fast: all 0.2s;
+    --transition-normal: all 0.3s;
+}
+
+/* Basic Styling */
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-image: url('/bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     margin: 0;
     padding: 0;
+    font-family: var(--font-primary);
+    line-height: 1.6;
+    color: var(--color-light-text);
+    background-image: url('bg.png');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
     min-height: 100vh;
-    width: 100%;
-    color: #ffffff;
-}
-
-a, .btn-link {
-    color: #5ca8e0;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
+    font-family: var(--font-headings);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+    line-height: 1.2;
 }
 
-p, div, span, td, th, li {
-    color: #f0f0f0;
+h1 {
+    font-size: var(--font-size-xxl);
 }
 
-.content {
-    padding: 20px;
-    margin-top: 1.1rem;
+h2 {
+    font-size: var(--font-size-xl);
 }
 
-h1:focus {
+h3 {
+    font-size: var(--font-size-lg);
+}
+
+h4 {
+    font-size: var(--font-size-md);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline;
+}
+
+/* Form Controls */
+input, select, textarea {
+    background-color: var(--color-dark-transparent);
+    color: var(--color-light);
+    border: var(--border-width) solid var(--color-light-transparent);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+}
+
+input:focus, select:focus, textarea:focus {
     outline: none;
+    border-color: var(--color-primary);
 }
 
-.valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+/* Utility Classes */
+.text-center {
+    text-align: center;
 }
 
-.invalid {
-    outline: 1px solid #e50000;
+.text-right {
+    text-align: right;
 }
 
-.validation-message {
-    color: #e50000;
+.text-left {
+    text-align: left;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-center {
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-between {
+    justify-content: space-between;
+}
+
+.gap-xs {
+    gap: var(--spacing-xs);
+}
+
+.gap-sm {
+    gap: var(--spacing-sm);
+}
+
+.gap-md {
+    gap: var(--spacing-md);
+}
+
+.gap-lg {
+    gap: var(--spacing-lg);
+}
+
+.mt-sm {
+    margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+    margin-top: var(--spacing-md);
+}
+
+.mt-lg {
+    margin-top: var(--spacing-lg);
+}
+
+.mb-sm {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.m-auto {
+    margin: 0 auto;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-md) 0;
+    background-color: var(--color-dark-transparent);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+th, td {
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: var(--border-width) solid var(--color-light-transparent);
+}
+
+th {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-family: var(--font-headings);
+}
+
+/* Error UI */
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
 }
 
 .blazor-error-boundary {
@@ -63,17 +250,4 @@ h1:focus {
 
 .blazor-error-boundary::after {
     content: "An error has occurred."
-}
-
-.darker-border-checkbox.form-check-input {
-    border-color: #929292;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-    color: var(--bs-secondary-color);
-    text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-    text-align: start;
 }

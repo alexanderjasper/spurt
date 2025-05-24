@@ -4,30 +4,32 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Spur't</h1>
+<div class="container container-sm">
+    <h1>Spur't</h1>
 
-@if (CurrentUser != null)
-{
-    <h2>Velkommen @CurrentUser.Name</h2>
+    @if (CurrentUser != null)
+    {
+        <h2>Velkommen @CurrentUser.Name</h2>
 
-    <div class="actions">
-        @if (IsLoading)
-        {
-            <LoadingIndicator/>
-        }
-        else
-        {
-            <div>
-                <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
-            </div>
-
-            <div>
-                <h3>Eller deltag i et eksisterende spil</h3>
-                <div>
-                    <input @bind="GameCode" placeholder="Indtast spilkode"/>
-                    <button @onclick="JoinGame" class="button">Deltag</button>
+        <div class="actions">
+            @if (IsLoading)
+            {
+                <LoadingIndicator/>
+            }
+            else
+            {
+                <div class="text-center">
+                    <button @onclick="CreateNewGame" class="button">Opret Nyt Spil</button>
                 </div>
-            </div>
-        }
-    </div>
-}
+
+                <div class="text-center">
+                    <h3>Eller deltag i et eksisterende spil</h3>
+                    <div class="flex-container flex-column flex-center">
+                        <input @bind="GameCode" placeholder="Indtast spilkode" class="input"/>
+                        <button @onclick="JoinGame" class="button">Deltag</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
