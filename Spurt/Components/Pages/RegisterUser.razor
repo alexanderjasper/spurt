@@ -3,15 +3,15 @@
 
 <PageTitle>Spur't | Registrer</PageTitle>
 
-<h1>Registrer</h1>
-
-<EditForm Model="Model" OnValidSubmit="Submit">
-    <div class="form-group">
-        <label for="userName">Dit navn</label>
-        <InputText id="userName" @bind-Value="Model!.Name"/>
-    </div>
-    <div class="form-actions">
-        <button type="submit">Registrer</button>
-    </div>
-</EditForm>
+<div class="page-container">
+    <EditForm Model="Model" OnValidSubmit="Submit">
+        <div class="form-group">
+            <label for="userName">Dit navn</label>
+            <InputText id="userName" @bind-Value="Model!.Name"/>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Registrer</button>
+        </div>
+    </EditForm>
+</div>
 
