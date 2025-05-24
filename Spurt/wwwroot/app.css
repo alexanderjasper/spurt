@@ -332,3 +332,15 @@ th {
 .blazor-error-boundary::after {
     content: "An error has occurred."
 }
+
+/* Page Container */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 180px);
+    width: 100%;
+    padding-top: 0;
+    margin-top: -2rem;
+}
