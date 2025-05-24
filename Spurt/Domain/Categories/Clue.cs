@@ -8,7 +8,7 @@ public class Clue
     public required string Answer { get; set; }
     public required string Question { get; set; }
     public required int PointValue { get; set; }
-    public bool IsAnswered { get; set; } = false;
+    public bool IsAnswered => AnsweredByPlayerId != null;
     public Guid? AnsweredByPlayerId { get; set; }
     public Player? AnsweredByPlayer { get; set; }
     public required Guid CategoryId { get; set; }

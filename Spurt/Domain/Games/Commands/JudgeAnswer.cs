@@ -42,8 +42,7 @@ public class JudgeAnswer(
                 // TODO: If BuzzedPlayer is the only one with remaining clues, select the lowest value clue from BuzzedPlayer
                 // TODO: If no clues left, progress to next game state
                 game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
-                game.SelectedClue.IsAnswered = true;
-                
+
                 var allClues = new List<Clue>();
                 foreach (var player in game.Players)
                 {

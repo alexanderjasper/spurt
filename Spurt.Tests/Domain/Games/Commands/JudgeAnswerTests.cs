@@ -74,7 +74,6 @@ public class JudgeAnswerTests
             Question = "Test Question",
             CategoryId = category.Id,
             Category = category,
-            IsAnswered = false
         };
 
         // Add an additional unanswered clue
@@ -86,7 +85,6 @@ public class JudgeAnswerTests
             Question = "Another Question",
             CategoryId = category.Id,
             Category = category,
-            IsAnswered = false
         };
 
         // Explicitly set the clues collection
@@ -342,7 +340,6 @@ public class JudgeAnswerTests
             Question = "Test Question",
             CategoryId = category.Id,
             Category = category,
-            IsAnswered = false
         };
         category.Clues = [clue];
         player2.Category = category;

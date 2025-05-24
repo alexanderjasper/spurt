@@ -104,7 +104,14 @@ public class SelectClueTests
             Game = game,
             GameId = game.Id
         };
-        
+        var player2 = new Player
+        {
+            Id = Guid.NewGuid(),
+            User = new User { Name = "Player 2" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id
+        };
         var category = new Category
         {
             Id = Guid.NewGuid(),
@@ -112,7 +119,6 @@ public class SelectClueTests
             PlayerId = player.Id,
             Player = player
         };
-        
         var clue = new Clue
         {
             Id = clueId,
@@ -121,7 +127,8 @@ public class SelectClueTests
             Question = "Test Question",
             CategoryId = category.Id,
             Category = category,
-            IsAnswered = true
+            AnsweredByPlayer = player2,
+            AnsweredByPlayerId = player2.Id,
         };
         
         _getGame.Execute(gameCode).Returns(game);
@@ -172,7 +179,6 @@ public class SelectClueTests
             Question = "Test Question",
             CategoryId = category.Id,
             Category = category,
-            IsAnswered = false
         };
         
         _getGame.Execute(gameCode).Returns(game);

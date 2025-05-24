@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using Spurt.Data.Commands;
 using Spurt.Domain.Games;
 using Spurt.Domain.Games.Commands;
-using Spurt.Data.Commands;
 
 namespace Spurt.Tests.Integration;
 
@@ -211,10 +211,10 @@ public class GamePlayWorkflowTests
         // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
         var helper = new IntegrationTestHelper(testEnv);
-        
+
         // Create a game with 2 players
         var game = await helper.CreateGame(2);
-        
+
         // Get real implementations from the test environment's service provider
         var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
         var selectClue = testEnv.ServiceProvider.GetRequiredService<SelectClue>();
@@ -225,50 +225,52 @@ public class GamePlayWorkflowTests
         // Get player references
         var player1 = game.Players.Single(p => p.IsCreator);
         var player2 = game.Players.Single(p => !p.IsCreator);
-        
+
         // Mark all but one clue from each player as already answered
         var clue1 = player1.Category!.Clues.First();
         var clue2 = player2.Category!.Clues.First();
-        
+
         foreach (var clue in player1.Category!.Clues.Where(c => c.Id != clue1.Id))
         {
-            clue.IsAnswered = true;
+            clue.AnsweredByPlayer = player2;
+            clue.AnsweredByPlayerId = player2.Id;
         }
-        
+
         foreach (var clue in player2.Category!.Clues.Where(c => c.Id != clue2.Id))
         {
-            clue.IsAnswered = true;
+            clue.AnsweredByPlayer = player1;
+            clue.AnsweredByPlayerId = player1.Id;
         }
-        
+
         // Update the game with the pre-answered clues
         game = await updateGame.Execute(game);
-        
+
         // Start the game
         game = await startGame.Execute(game.Code, player1.UserId);
-        
+
         // Player1 selects player2's remaining clue
         game = await selectClue.Execute(game.Code, clue2.Id);
-        
+
         // Player1 buzzes in
         game = await pressBuzzer.Execute(game.Code, player1.Id);
-        
+
         // Player2 judges answer as correct
         game = await judgeAnswer.Execute(game.Code, player2.Id, true);
-        
+
         // Now player1 has control and selects his own remaining clue
         game = await selectClue.Execute(game.Code, clue1.Id);
-        
+
         // Player2 buzzes in
         game = await pressBuzzer.Execute(game.Code, player2.Id);
-        
+
         // Player1 judges answer as correct - this should finish the game
         game = await judgeAnswer.Execute(game.Code, player1.Id, true);
-        
+
         // Verify game is now in Finished state
         Assert.Equal(GameState.Finished, game.State);
-        
+
         // Verify scores
-        Assert.Equal(100, player2.GetScore());
-        Assert.Equal(100, player1.GetScore());
+        Assert.Equal(1500, player2.GetScore());
+        Assert.Equal(1500, player1.GetScore());
     }
 }
