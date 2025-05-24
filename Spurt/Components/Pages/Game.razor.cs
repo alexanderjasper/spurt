@@ -113,6 +113,16 @@ public partial class Game(
         await UpdateGameData(game);
     }
 
+    private async Task HandleCategorySaved(Domain.Games.Game updatedGame)
+    {
+        await UpdateGameData(updatedGame);
+    }
+
+    private async Task HandleCategorySubmitted(Domain.Games.Game updatedGame)
+    {
+        await UpdateGameData(updatedGame);
+    }
+
     public async ValueTask DisposeAsync()
     {
         await gameHubConnectionService.DisposeAsync();

@@ -39,7 +39,9 @@
                 {
                     <CategoryEditor
                         PlayerId="@CurrentPlayer.Id"
-                        ExistingCategory="@CurrentPlayer.Category"/>
+                        ExistingCategory="@CurrentPlayer.Category"
+                        OnCategorySaved="OnCategorySaved"
+                        OnCategorySubmitted="OnCategorySubmitted"/>
                 }
             </div>
         }

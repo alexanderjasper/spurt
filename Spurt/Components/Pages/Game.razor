@@ -18,7 +18,9 @@
                 <GameWaitingForCategoriesView
                     Game="CurrentGame"
                     CurrentPlayer="_currentPlayer"
-                    OnStartGame="StartGame"/>
+                    OnStartGame="StartGame"
+                    OnCategorySaved="HandleCategorySaved"
+                    OnCategorySubmitted="HandleCategorySubmitted"/>
                 break;
 
             case GameState.InProgress:

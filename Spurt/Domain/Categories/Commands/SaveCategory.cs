@@ -10,7 +10,7 @@ public class SaveCategory(
     IGetGame getGame,
     IGameHubNotificationService gameHubNotificationService) : ISaveCategory
 {
-    public async Task<Category> Execute(Category category, bool isSubmitting = false)
+    public async Task<Game> Execute(Category category, bool isSubmitting = false)
     {
         if (category.Clues.Any(c => c.PointValue < 100 || c.PointValue > 500 || c.PointValue % 100 != 0))
             throw new ArgumentException("Clue point values must be 100, 200, 300, 400, or 500.");
@@ -34,17 +34,15 @@ public class SaveCategory(
         else
             savedCategory = await updateCategory.Execute(category);
 
-        if (!category.IsSubmitted || savedCategory.Player?.Game == null) return savedCategory;
-
         var game = await getGame.Execute(savedCategory.Player.Game.Code) ??
                    throw new InvalidOperationException("Game not found after saving category.");
         await gameHubNotificationService.NotifyGameUpdated(game);
 
-        return savedCategory;
+        return game;
     }
 }
 
 public interface ISaveCategory
 {
-    Task<Category> Execute(Category category, bool isSubmitting = false);
+    Task<Game> Execute(Category category, bool isSubmitting = false);
 }

@@ -8,6 +8,8 @@ public partial class CategoryEditor
 {
     [Parameter] public Guid PlayerId { get; set; }
     [Parameter] public Category? ExistingCategory { get; set; }
+    [Parameter] public EventCallback<Domain.Games.Game> OnCategorySaved { get; set; }
+    [Parameter] public EventCallback<Domain.Games.Game> OnCategorySubmitted { get; set; }
 
     public required Category Category { get; set; }
     private bool IsEditing => ExistingCategory != null;
@@ -82,11 +84,13 @@ public partial class CategoryEditor
 
     private async Task SaveDraft()
     {
-        await SaveCategory.Execute(Category);
+        var game = await SaveCategory.Execute(Category);
+        await OnCategorySaved.InvokeAsync(game);
     }
 
     private async Task SubmitCategory()
     {
-        await SaveCategory.Execute(Category, true);
+        var game = await SaveCategory.Execute(Category, true);
+        await OnCategorySaved.InvokeAsync(game);
     }
 }
