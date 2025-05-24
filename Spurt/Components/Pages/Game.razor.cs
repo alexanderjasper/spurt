@@ -9,9 +9,11 @@ using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
+// TODO: Add a scoring history to show how each player earned their points. Perhaps store it on the clue? Or a game log?
+// TODO: Game completed state.
+// TODO: Add negative scoring if no one can answer the question
 // TODO: Add an option to leave the game (confirmation dialog)
 // TODO: Add an option to kick a player. Confirmation dialog. Perhaps all should agree? If multiple players are kicked, only users not up for kicking have to agree.
-// TODO: Add negative scoring if no one can answer the question
 // TODO: Add negative scoring for incorrect answers?
 // TODO: Handle disconnected players? Auto-skip turn?
 // TODO: Let the next player(s) answer if the quickest player can't answer correctly
@@ -20,9 +22,7 @@ namespace Spurt.Components.Pages;
 // TODO: Timeout for answering?
 // TODO: Other timeouts?
 // TODO: Spectator mode?
-// TODO: Game completed state.
-// TODO: Add a scoring history to show how each player earned their points. Perhaps store it on the clue? Or a game log?
-// TODO: Add sounds for buzzer press 
+// TODO: Add sounds for buzzer press
 // TODO: Add sounds for correct/incorrect answers
 // TODO: Add option to continue to a new round after all clues are answered
 // TODO: Add game statistics at the end (fastest answer, most points in one turn, etc.)
