@@ -1,0 +1,25 @@
+<div class="game-finished-container">
+    <h2>Spillet er afsluttet</h2>
+
+    <div class="final-scores">
+        <h3>Endelige pointstillinger</h3>
+
+        <table class="score-table">
+            <thead>
+            <tr>
+                <th>Spiller</th>
+                <th>Point</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var player in Game.Players.OrderByDescending(p => p.GetScore()))
+            {
+                <tr class="@(player.Id == Game.Players.OrderByDescending(p => p.GetScore()).First().Id ? "winner" : "")">
+                    <td>@player.User.Name</td>
+                    <td>@player.GetScore()</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
