@@ -1,9 +1,19 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-image: url('/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    color: #ffffff;
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: #5ca8e0;
 }
 
 .btn-primary {
@@ -16,8 +26,17 @@ a, .btn-link {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+}
+
+p, div, span, td, th, li {
+    color: #f0f0f0;
+}
+
 .content {
-    padding-top: 1.1rem;
+    padding: 20px;
+    margin-top: 1.1rem;
 }
 
 h1:focus {
