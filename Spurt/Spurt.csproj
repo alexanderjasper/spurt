@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <None Include="wwwroot\bg.png" />
+      <None Include="wwwroot\logo.png" />
     </ItemGroup>
 
 </Project>

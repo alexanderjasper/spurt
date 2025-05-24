@@ -20,6 +20,7 @@ p {
     border-radius: 4px;
     font-weight: bold;
     letter-spacing: 2px;
+    max-width: fit-content;
 }
 
 ::deep .point-button {
