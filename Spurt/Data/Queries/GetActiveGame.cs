@@ -10,7 +10,7 @@ public class GetActiveGame(AppDbContext dbContext) : IGetActiveGame
         return await dbContext.Games
             .Include(g => g.Players)
             .ThenInclude(p => p.User)
-            .Where(g => g.Players.Any(p => p.UserId == userId))
+            .Where(g => g.State != GameState.Finished && g.Players.Any(p => p.UserId == userId))
             .OrderByDescending(g => g.CreatedAt)
             .FirstOrDefaultAsync();
     }
