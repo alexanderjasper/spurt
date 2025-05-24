@@ -55,41 +55,43 @@ public class JudgeAnswerTests
             GameId = game.Id,
             AnsweredClues = [],
         };
-
-        var category = new Category
+        var category1 = new Category
         {
             Id = Guid.NewGuid(),
             Title = "Test Category",
-            PlayerId = clueOwnerId,
+            PlayerId = player1.Id,
+            Player = player1,
+            Clues = [],
+        };
+        player1.Category = category1;
+        var category2 = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Test Category",
+            PlayerId = player2.Id,
             Player = player2,
             Clues = [],
         };
-
-        // Add the clue that will be answered
+        player2.Category = category2;
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
             PointValue = 200,
             Answer = "Test Answer",
             Question = "Test Question",
-            CategoryId = category.Id,
-            Category = category,
+            CategoryId = category2.Id,
+            Category = category2,
         };
-
-        // Add an additional unanswered clue
         var clue2 = new Clue
         {
             Id = Guid.NewGuid(),
             PointValue = 300,
             Answer = "Another Answer",
             Question = "Another Question",
-            CategoryId = category.Id,
-            Category = category,
+            CategoryId = category2.Id,
+            Category = category2,
         };
-
-        // Explicitly set the clues collection
-        category.Clues = [clue, clue2];
-        player2.Category = category;
+        category2.Clues = [clue, clue2];
 
         game.Players = [player1, player2];
         game.SelectedClue = clue;
@@ -326,24 +328,33 @@ public class JudgeAnswerTests
             GameId = game.Id,
             AnsweredClues = [],
         };
-        var category = new Category
+        var category1 = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Test Category",
+            PlayerId = clueOwnerId,
+            Player = player1,
+        };
+        player1.Category = category1;
+        var category2 = new Category
         {
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = clueOwnerId,
             Player = player2,
         };
+        player2.Category = category2;
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
             PointValue = 200,
             Answer = "Test Answer",
             Question = "Test Question",
-            CategoryId = category.Id,
-            Category = category,
+            CategoryId = category2.Id,
+            Category = category2,
         };
-        category.Clues = [clue];
-        player2.Category = category;
+        category2.Clues = [clue];
+        player2.Category = category2;
         game.Players = [player1, player2];
         game.SelectedClue = clue;
         game.SelectedClueId = clue.Id;

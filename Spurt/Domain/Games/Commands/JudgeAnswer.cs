@@ -44,8 +44,7 @@ public class JudgeAnswer(
 
                 var allClues = new List<Clue>();
                 foreach (var player in game.Players)
-                    if (player.Category != null)
-                        allClues.AddRange(player.Category!.Clues);
+                    allClues.AddRange(player.Category!.Clues);
 
                 if (allClues.All(c => c.IsAnswered))
                 {
