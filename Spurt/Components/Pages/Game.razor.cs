@@ -93,13 +93,15 @@ public partial class Game(
     {
         if (_currentUserId == null) return;
 
-        CurrentGame = await startGame.Execute(Code, _currentUserId.Value);
+        var game = await startGame.Execute(Code, _currentUserId.Value);
+        await UpdateGameData(game);
     }
 
     private async Task SelectClue(Clue clue)
     {
         if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
-        await selectClue.Execute(CurrentGame.Code, clue.Id);
+        var game = await selectClue.Execute(CurrentGame.Code, clue.Id);
+        await UpdateGameData(game);
     }
 
     private async Task PressBuzz()
@@ -107,7 +109,8 @@ public partial class Game(
         if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
         if (_currentPlayer == null) throw new InvalidOperationException("Player not found");
 
-        await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
+        var game = await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
+        await UpdateGameData(game);
     }
 
     public async ValueTask DisposeAsync()
