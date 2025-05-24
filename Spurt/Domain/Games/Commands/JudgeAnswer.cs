@@ -1,5 +1,7 @@
 using Spurt.Data.Commands;
 using Spurt.Data.Queries;
+using System.Linq;
+using Spurt.Domain.Categories;
 
 namespace Spurt.Domain.Games.Commands;
 
@@ -41,10 +43,38 @@ public class JudgeAnswer(
                 // TODO: If no clues left, progress to next game state
                 game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
                 game.SelectedClue.IsAnswered = true;
+                
+                var allClues = new List<Clue>();
+                foreach (var player in game.Players)
+                {
+                    if (player.Category != null)
+                    {
+                        allClues.AddRange(player.Category.Clues);
+                    }
+                }
+                
+                bool allAnswered = true;
+                foreach (var c in allClues)
+                {
+                    if (!c.IsAnswered)
+                    {
+                        allAnswered = false;
+                        break;
+                    }
+                }
+                
+                if (allAnswered)
+                {
+                    game.State = GameState.Finished;
+                }
+                else
+                {
+                    game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
+                    game.State = GameState.InProgress;
+                }
+                
                 game.SelectedClue = null;
                 game.SelectedClueId = null;
-
-                game.State = GameState.InProgress;
             }
         }
         else
@@ -55,7 +85,6 @@ public class JudgeAnswer(
         game.BuzzedPlayerId = null;
         game.BuzzedPlayer = null;
         game.BuzzedTime = null;
-
 
         var result = await updateGame.Execute(game);
         await notificationService.NotifyGameUpdated(result);

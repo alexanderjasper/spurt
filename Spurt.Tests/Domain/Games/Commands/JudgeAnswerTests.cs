@@ -61,9 +61,11 @@ public class JudgeAnswerTests
             Id = Guid.NewGuid(),
             Title = "Test Category",
             PlayerId = clueOwnerId,
-            Player = player2
+            Player = player2,
+            Clues = []
         };
 
+        // Add the clue that will be answered
         var clue = new Clue
         {
             Id = Guid.NewGuid(),
@@ -71,8 +73,25 @@ public class JudgeAnswerTests
             Answer = "Test Answer",
             Question = "Test Question",
             CategoryId = category.Id,
-            Category = category
+            Category = category,
+            IsAnswered = false
         };
+
+        // Add an additional unanswered clue
+        var clue2 = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 300,
+            Answer = "Another Answer",
+            Question = "Another Question",
+            CategoryId = category.Id,
+            Category = category,
+            IsAnswered = false
+        };
+
+        // Explicitly set the clues collection
+        category.Clues = [clue, clue2];
+        player2.Category = category;
 
         game.Players = [player1, player2];
         game.SelectedClue = clue;
@@ -81,8 +100,13 @@ public class JudgeAnswerTests
         game.BuzzedPlayer = player1;
         game.BuzzedTime = DateTime.UtcNow;
 
+        // Mock return values
         _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
-        _updateGame.Execute(Arg.Any<Game>()).Returns(game);
+        _updateGame.Execute(Arg.Any<Game>()).Returns(args => {
+            // Ensure the mock returns the updated game state with the second clue still unanswered
+            var updatedGame = (Game)args[0];
+            return updatedGame;
+        });
 
         // Act
         var result = await _sut.Execute(gameCode, clueOwnerId, true);
@@ -269,5 +293,77 @@ public class JudgeAnswerTests
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(
             async () => await _sut.Execute(gameCode, clueOwnerId, true));
+    }
+
+    [Fact]
+    public async Task Execute_WhenAllCluesAreAnswered_TransitionsToFinishedState()
+    {
+        // Arrange
+        var gameCode = "ABCD";
+        var clueOwnerId = Guid.NewGuid();
+        var buzzedPlayerId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Id = Guid.NewGuid(),
+            Code = gameCode,
+            State = GameState.BuzzerPressed
+        };
+        var player1 = new Player
+        {
+            Id = buzzedPlayerId,
+            User = new User { Name = "Player 1" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = []
+        };
+        var player2 = new Player
+        {
+            Id = clueOwnerId,
+            User = new User { Name = "Player 2" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = []
+        };
+        var category = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Test Category",
+            PlayerId = clueOwnerId,
+            Player = player2
+        };
+        var clue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 200,
+            Answer = "Test Answer",
+            Question = "Test Question",
+            CategoryId = category.Id,
+            Category = category,
+            IsAnswered = false
+        };
+        category.Clues = [clue];
+        player2.Category = category;
+        game.Players = [player1, player2];
+        game.SelectedClue = clue;
+        game.SelectedClueId = clue.Id;
+        game.BuzzedPlayerId = buzzedPlayerId;
+        game.BuzzedPlayer = player1;
+        game.BuzzedTime = DateTime.UtcNow;
+        _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
+        _updateGame.Execute(Arg.Any<Game>()).Returns(game);
+
+        // Act
+        var result = await _sut.Execute(gameCode, clueOwnerId, true);
+
+        // Assert
+        Assert.Equal(GameState.Finished, result.State);
+        Assert.True(clue.IsAnswered);
+        var updatedPlayer = result.Players.First(p => p.Id == buzzedPlayerId);
+        Assert.Equal(200, updatedPlayer.GetScore());
+        await _updateGame.Received(1).Execute(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
     }
 }
