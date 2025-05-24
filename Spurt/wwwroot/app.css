@@ -121,6 +121,24 @@ input:focus, select:focus, textarea:focus {
     border-color: var(--color-primary);
 }
 
+.form-group {
+    margin-bottom: var(--spacing-md);
+    width: 100%;
+    text-align: center;
+}
+
+.form-group label {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-xs);
+    display: block;
+    text-align: center;
+}
+
+.form-actions {
+    width: 100%;
+    text-align: center;
+}
+
 /* Utility Classes */
 .text-center {
     text-align: center;

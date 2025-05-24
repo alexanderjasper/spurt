@@ -6,13 +6,11 @@
 <h1>Registrer</h1>
 
 <EditForm Model="Model" OnValidSubmit="Submit">
-    <div>
-        <label>Dit navn</label>
+    <div class="form-group">
+        <label for="userName">Dit navn</label>
+        <InputText id="userName" @bind-Value="Model!.Name"/>
     </div>
-    <div>
-        <InputText @bind-Value="Model!.Name"/>
-    </div>
-    <div>
+    <div class="form-actions">
         <button type="submit">Registrer</button>
     </div>
 </EditForm>
