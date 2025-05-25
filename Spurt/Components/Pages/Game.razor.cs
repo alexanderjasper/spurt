@@ -63,19 +63,12 @@ public partial class Game(
     private async Task InitializeGameHub()
     {
         await gameHubConnectionService.Initialize(Code);
-        gameHubConnectionService.RegisterOnGameUpdated(UpdateGameData);
-    }
-
-    private async Task UpdateGameData(Domain.Games.Game updatedGame)
-    {
-        CurrentGame = updatedGame;
-        _currentPlayer = CurrentGame.Players.FirstOrDefault(p => p.UserId == _currentUserId);
-        clearContext.Execute();
-        await InvokeAsync(StateHasChanged);
+        gameHubConnectionService.RegisterOnGameUpdated(LoadGameData);
     }
 
     private async Task LoadGameData()
     {
+        clearContext.Execute();
         CurrentGame = await getGame.Execute(Code);
 
         if (CurrentGame == null)
@@ -93,15 +86,15 @@ public partial class Game(
     {
         if (_currentUserId == null) return;
 
-        var game = await startGame.Execute(Code, _currentUserId.Value);
-        await UpdateGameData(game);
+        await startGame.Execute(Code, _currentUserId.Value);
+        await LoadGameData();
     }
 
     private async Task SelectClue(Clue clue)
     {
         if (CurrentGame == null) throw new InvalidOperationException("Game not loaded");
-        var game = await selectClue.Execute(CurrentGame.Code, clue.Id);
-        await UpdateGameData(game);
+        await selectClue.Execute(CurrentGame.Code, clue.Id);
+        await LoadGameData();
     }
 
     private async Task PressBuzz()
@@ -110,17 +103,7 @@ public partial class Game(
         if (_currentPlayer == null) throw new InvalidOperationException("Player not found");
 
         var game = await pressBuzzer.Execute(CurrentGame.Code, _currentPlayer.Id);
-        await UpdateGameData(game);
-    }
-
-    private async Task HandleCategorySaved(Domain.Games.Game updatedGame)
-    {
-        await UpdateGameData(updatedGame);
-    }
-
-    private async Task HandleCategorySubmitted(Domain.Games.Game updatedGame)
-    {
-        await UpdateGameData(updatedGame);
+        await LoadGameData();
     }
 
     public async ValueTask DisposeAsync()

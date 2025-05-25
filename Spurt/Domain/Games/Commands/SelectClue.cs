@@ -29,7 +29,7 @@ public class SelectClue(
         game.State = GameState.ClueSelected;
 
         var result = await updateGame.Execute(game);
-        await notificationService.NotifyGameUpdated(result);
+        await notificationService.NotifyGameUpdated(result.Code);
 
         return game;
     }

@@ -157,7 +157,8 @@ public class CategorySubmissionWorkflowTests
 
         // Step 3: Try to submit, should fail with ArgumentException since validation happens before database access
         var exception =
-            await Assert.ThrowsAsync<ArgumentException>(async () => await saveCategory.Execute(category1, true));
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await saveCategory.Execute(category1, true));
 
         Assert.Contains("must have exactly 5 clues", exception.Message);
     }
@@ -199,7 +200,8 @@ public class CategorySubmissionWorkflowTests
 
         // Step 3: Try to submit, should fail with ArgumentException since validation happens before database access
         var exception =
-            await Assert.ThrowsAsync<ArgumentException>(async () => await saveCategory.Execute(category1, true));
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await saveCategory.Execute(category1, true));
 
         Assert.Contains("Clue point values must be 100, 200, 300", exception.Message);
     }

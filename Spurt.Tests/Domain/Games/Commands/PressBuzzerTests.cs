@@ -27,7 +27,7 @@ public class PressBuzzerTests
         Assert.NotNull(result.BuzzedTime);
 
         await updateGame.Received(1).Execute(Arg.Any<Game>());
-        await notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]
@@ -296,7 +296,7 @@ public class PressBuzzerTests
         updateGame.Execute(Arg.Any<Game>()).Returns(args => args.Arg<Game>());
 
         var notificationService = Substitute.For<IGameHubNotificationService>();
-        notificationService.NotifyGameUpdated(Arg.Any<Game>()).Returns(Task.CompletedTask);
+        notificationService.NotifyGameUpdated(Arg.Any<string>()).Returns(Task.CompletedTask);
 
         // Create command
         var pressBuzzer = new PressBuzzer(getGame, updateGame, notificationService);

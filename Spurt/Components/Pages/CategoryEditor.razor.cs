@@ -1,50 +1,54 @@
 using Microsoft.AspNetCore.Components;
 using Spurt.Domain.Categories;
 using Spurt.Domain.Categories.Commands;
+using Spurt.Domain.Games;
+using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
-public partial class CategoryEditor
+public partial class CategoryEditor(ISaveCategory saveCategory, IGameHubNotificationService gameHubNotificationService)
 {
-    [Parameter] public Guid PlayerId { get; set; }
-    [Parameter] public Category? ExistingCategory { get; set; }
-    [Parameter] public EventCallback<Domain.Games.Game> OnCategorySaved { get; set; }
-    [Parameter] public EventCallback<Domain.Games.Game> OnCategorySubmitted { get; set; }
+    private class ClueForm
+    {
+        public string Question { get; set; } = string.Empty;
+        public string Answer { get; set; } = string.Empty;
+        public int PointValue { get; set; } = 100;
+    }
 
-    public required Category Category { get; set; }
-    private bool IsEditing => ExistingCategory != null;
+    private class CategoryForm
+    {
+        public string Title { get; set; } = string.Empty;
+        public List<ClueForm> Clues { get; set; } = [];
+    }
 
-    [Inject] private ISaveCategory SaveCategory { get; set; } = null!;
+    [Parameter] public required Player CurrentPlayer { get; set; }
+    private CategoryForm Form { get; } = new();
+
+    private bool IsEditing => CurrentPlayer.Category != null;
 
     protected override void OnInitialized()
     {
-        if (ExistingCategory != null)
+        var existingCategory = CurrentPlayer.Category;
+        if (existingCategory != null)
         {
-            Category = ExistingCategory;
-
-            foreach (var pointValue in new[] { 100, 200, 300, 400, 500 }) EnsureClueExists(pointValue);
-        }
-        else
-        {
-            // Initialize a new category
-            Category = new Category
-            {
-                Id = Guid.NewGuid(),
-                Title = "",
-                PlayerId = PlayerId,
-                Clues = new List<Clue>(),
-                // Player will be set by the data layer
-                Player = null!,
-            };
+            Form.Title = existingCategory.Title;
+            Form.Clues = existingCategory.Clues
+                .Select(c => new ClueForm
+                {
+                    Question = c.Question,
+                    Answer = c.Answer,
+                    PointValue = c.PointValue,
+                })
+                .ToList();
         }
 
         base.OnInitialized();
     }
 
     private bool IsValid =>
-        !string.IsNullOrWhiteSpace(Category.Title) &&
-        Category.Clues.Count == 5 &&
-        Category.Clues.All(c => !string.IsNullOrWhiteSpace(c.Answer) && !string.IsNullOrWhiteSpace(c.Question));
+        !string.IsNullOrWhiteSpace(Form.Title) &&
+        Form.Clues.Count == 5 &&
+        Form.Clues.All(c => !string.IsNullOrWhiteSpace(c.Answer) && !string.IsNullOrWhiteSpace(c.Question));
 
     private int PointValueToIndex(int pointValue)
     {
@@ -55,42 +59,69 @@ public partial class CategoryEditor
     {
         var index = PointValueToIndex(pointValue);
 
-        while (Category.Clues.Count <= index)
-            Category.Clues.Add(new Clue
+        while (Form.Clues.Count <= index)
+            Form.Clues.Add(new ClueForm
             {
                 Answer = "",
                 Question = "",
                 PointValue = pointValue,
-                CategoryId = Category.Id,
-                Category = Category,
             });
 
-        if (Category.Clues[index].PointValue != pointValue)
+        if (Form.Clues[index].PointValue != pointValue)
         {
-            var existingClueWithPointValue = Category.Clues.FirstOrDefault(c => c.PointValue == pointValue);
-            if (existingClueWithPointValue != null && existingClueWithPointValue != Category.Clues[index])
+            var existingClueWithPointValue = Form.Clues.FirstOrDefault(c => c.PointValue == pointValue);
+            if (existingClueWithPointValue != null && existingClueWithPointValue != Form.Clues[index])
             {
-                var existingIndex = Category.Clues.IndexOf(existingClueWithPointValue);
-                var temp = Category.Clues[index];
-                Category.Clues[index] = existingClueWithPointValue;
-                Category.Clues[existingIndex] = temp;
+                var existingIndex = Form.Clues.IndexOf(existingClueWithPointValue);
+                var temp = Form.Clues[index];
+                Form.Clues[index] = existingClueWithPointValue;
+                Form.Clues[existingIndex] = temp;
             }
             else
             {
-                Category.Clues[index].PointValue = pointValue;
+                Form.Clues[index].PointValue = pointValue;
             }
         }
     }
 
     private async Task SaveDraft()
     {
-        var game = await SaveCategory.Execute(Category);
-        await OnCategorySaved.InvokeAsync(game);
+        FillExistingCategory();
+        if (CurrentPlayer.Category == null)
+            throw new InvalidOperationException("No existing category");
+        await saveCategory.Execute(CurrentPlayer.Category);
+
+        await gameHubNotificationService.NotifyGameUpdated(CurrentPlayer.Game.Code);
     }
 
-    private async Task SubmitCategory()
+    private async Task Submit()
     {
-        var game = await SaveCategory.Execute(Category, true);
-        await OnCategorySaved.InvokeAsync(game);
+        FillExistingCategory();
+        if (CurrentPlayer.Category == null)
+            throw new InvalidOperationException("No existing category");
+        await saveCategory.Execute(CurrentPlayer.Category, true);
+
+        await gameHubNotificationService.NotifyGameUpdated(CurrentPlayer.Game.Code);
+    }
+
+    private void FillExistingCategory()
+    {
+        CurrentPlayer.Category ??= new Category
+        {
+            Player = CurrentPlayer,
+            PlayerId = CurrentPlayer.Id,
+        };
+        var category = CurrentPlayer.Category;
+        category.Title = Form.Title;
+        category.Clues = Form.Clues
+            .Select(c => new Clue
+            {
+                Question = c.Question,
+                Answer = c.Answer,
+                PointValue = c.PointValue,
+                CategoryId = category.Id,
+                Category = category,
+            })
+            .ToList();
     }
 }

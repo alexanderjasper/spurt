@@ -190,6 +190,6 @@ public class SelectClueTests
         Assert.Equal(clue, result.SelectedClue);
 
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
-        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 }

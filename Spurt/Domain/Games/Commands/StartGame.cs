@@ -32,7 +32,7 @@ public class StartGame(
 
         game = await getGame.Execute(gameCode) ??
                throw new InvalidOperationException("Game not found after update");
-        await gameHubNotificationService.NotifyGameUpdated(game);
+        await gameHubNotificationService.NotifyGameUpdated(game.Code);
 
         return game;
     }

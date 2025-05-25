@@ -70,7 +70,7 @@ public class JudgeAnswer(
         game.BuzzedTime = null;
 
         var result = await updateGame.Execute(game);
-        await notificationService.NotifyGameUpdated(result);
+        await notificationService.NotifyGameUpdated(result.Code);
 
         return result;
     }

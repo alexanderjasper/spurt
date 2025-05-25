@@ -130,7 +130,7 @@ public class JudgeAnswerTests
 
         // Verify game was updated and notification was sent
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
-        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]
@@ -219,7 +219,7 @@ public class JudgeAnswerTests
 
         // Verify game was updated and notification was sent
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
-        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]
@@ -373,6 +373,6 @@ public class JudgeAnswerTests
         var updatedPlayer = result.Players.First(p => p.Id == buzzedPlayerId);
         Assert.Equal(200, updatedPlayer.GetScore());
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
-        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 }

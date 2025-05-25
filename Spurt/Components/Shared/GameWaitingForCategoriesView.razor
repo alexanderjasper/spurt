@@ -37,11 +37,7 @@
                 }
                 else
                 {
-                    <CategoryEditor
-                        PlayerId="@CurrentPlayer.Id"
-                        ExistingCategory="@CurrentPlayer.Category"
-                        OnCategorySaved="OnCategorySaved"
-                        OnCategorySubmitted="OnCategorySubmitted"/>
+                    <CategoryEditor CurrentPlayer="@CurrentPlayer"/>
                 }
             </div>
         }

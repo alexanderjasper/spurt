@@ -126,7 +126,7 @@ public class StartGameTests
         Assert.Equal(creator.Id, result.CurrentChoosingPlayerId);
 
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
-        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]

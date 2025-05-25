@@ -3,7 +3,7 @@
 
     <div>
         <label for="categoryTitle">Kategorinavn</label>
-        <input id="categoryTitle" @bind="Category.Title"/>
+        <input id="categoryTitle" @bind="Form.Title"/>
     </div>
 
     <h4>Spørgsmål</h4>
@@ -19,11 +19,11 @@
             <div>
                 <div>
                     <label>Svar (vises til spillerne)</label>
-                    <input @bind="@Category.Clues[index].Answer" @bind:event="oninput"/>
+                    <input @bind="@Form.Clues[index].Answer" @bind:event="oninput"/>
                 </div>
                 <div>
                     <label>Spørgsmål (hvad spillerne skal svare)</label>
-                    <input @bind="@Category.Clues[index].Question" @bind:event="oninput"/>
+                    <input @bind="@Form.Clues[index].Question" @bind:event="oninput"/>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
 
     <div>
         <button @onclick="SaveDraft" class="btn">Gem kladde</button>
-        <button @onclick="SubmitCategory" class="btn btn-primary"
+        <button @onclick="Submit" class="btn btn-primary"
                 disabled="@(!IsValid)">Indsend kategori
         </button>
     </div>

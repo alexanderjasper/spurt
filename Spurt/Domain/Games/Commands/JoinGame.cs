@@ -34,7 +34,7 @@ public class JoinGame(
 
         game = await getGame.Execute(gameCode) ??
                throw new InvalidOperationException("Game not found after adding player");
-        await gameHubNotificationService.NotifyGameUpdated(game);
+        await gameHubNotificationService.NotifyGameUpdated(game.Code);
 
         return game;
     }

@@ -45,7 +45,7 @@ public class JoinGameWorkflowTests
         Assert.Single(updatedGame.Players, p => p.UserId == user2.Id && !p.IsCreator);
 
         // Verify the notification service was called
-        await gameHubNotificationService.Received(1).NotifyGameUpdated(Arg.Any<Game>());
+        await gameHubNotificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class JoinGameWorkflowTests
         Assert.Single(gameAfterSecondJoin.Players, p => p.UserId == user2.Id);
 
         // Verify notification was not called again
-        await gameHubNotificationService.DidNotReceive().NotifyGameUpdated(Arg.Any<Game>());
+        await gameHubNotificationService.DidNotReceive().NotifyGameUpdated(Arg.Any<string>());
     }
 
     [Fact]
