@@ -8,6 +8,7 @@ public class SaveCategory(
     IAddCategory addCategory,
     IUpdateCategory updateCategory,
     IGetGame getGame,
+    IGetPlayer getPlayer,
     IGameHubNotificationService gameHubNotificationService) : ISaveCategory
 {
     public async Task<Game> Execute(Category category, bool isSubmitting = false)
@@ -27,14 +28,18 @@ public class SaveCategory(
                     "A submitted category must have exactly 5 clues with point values 100, 200, 300, 400, and 500.");
         }
 
-        Category savedCategory;
-        var isNewCategory = category.Player?.Category == null;
-        if (isNewCategory)
-            savedCategory = await addCategory.Execute(category);
-        else
-            savedCategory = await updateCategory.Execute(category);
+        var player = await getPlayer.Execute(category.PlayerId) ??
+                     throw new InvalidOperationException("Player not found for the category.");
 
-        var game = await getGame.Execute(savedCategory.Player.Game.Code) ??
+        Category savedCategory;
+        var isNewCategory = player.Category == null;
+        if (isNewCategory)
+            await addCategory.Execute(category);
+        else
+            await updateCategory.Execute(category);
+
+        var gameCode = player.Game.Code;
+        var game = await getGame.Execute(gameCode) ??
                    throw new InvalidOperationException("Game not found after saving category.");
         await gameHubNotificationService.NotifyGameUpdated(game);
 

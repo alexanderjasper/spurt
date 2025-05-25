@@ -7,7 +7,9 @@ public class GetPlayer(AppDbContext dbContext) : IGetPlayer
 {
     public async Task<Player?> Execute(Guid playerId)
     {
-        return await dbContext.Players.FirstOrDefaultAsync(p => p.Id == playerId);
+        return await dbContext.Players
+            .Include(p => p.Game)
+            .FirstOrDefaultAsync(p => p.Id == playerId);
     }
 }
 
