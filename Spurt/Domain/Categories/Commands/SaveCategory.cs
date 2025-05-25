@@ -31,7 +31,6 @@ public class SaveCategory(
         var player = await getPlayer.Execute(category.PlayerId) ??
                      throw new InvalidOperationException("Player not found for the category.");
 
-        Category savedCategory;
         var isNewCategory = player.Category == null;
         if (isNewCategory)
             await addCategory.Execute(category);
