@@ -6,7 +6,7 @@ namespace Spurt.Domain.Players;
 
 public class Player
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public bool IsCreator { get; set; }
     public required User User { get; set; }
     public required Guid UserId { get; set; }

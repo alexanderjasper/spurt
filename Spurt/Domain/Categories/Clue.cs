@@ -4,7 +4,7 @@ namespace Spurt.Domain.Categories;
 
 public class Clue
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public required string Answer { get; set; }
     public required string Question { get; set; }
     public required int PointValue { get; set; }

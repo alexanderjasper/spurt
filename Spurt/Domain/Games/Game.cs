@@ -14,7 +14,7 @@ public enum GameState
 
 public class Game
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public required string Code { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<Player> Players { get; set; } = [];

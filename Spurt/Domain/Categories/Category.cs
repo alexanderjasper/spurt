@@ -4,7 +4,7 @@ namespace Spurt.Domain.Categories;
 
 public class Category
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public string Title { get; set; } = "";
     public bool IsSubmitted { get; set; } = false;
     public List<Clue> Clues { get; set; } = [];
