@@ -38,10 +38,6 @@ public class JudgeAnswer(
                 game.SelectedClue.AnsweredByPlayer = buzzedPlayer;
                 buzzedPlayer.AnsweredClues.Add(game.SelectedClue);
 
-                // TODO: If BuzzedPlayer is the only one with remaining clues, select the lowest value clue from BuzzedPlayer
-                // TODO: If no clues left, progress to next game state
-                game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
-
                 var allClues = new List<Clue>();
                 foreach (var player in game.Players)
                     allClues.AddRange(player.Category!.Clues);
@@ -52,7 +48,7 @@ public class JudgeAnswer(
                 }
                 else
                 {
-                    game.CurrentChoosingPlayerId = game.BuzzedPlayerId;
+                    game.CurrentChoosingPlayerId = DetermineNextChoosingPlayer(game, game.BuzzedPlayerId.Value);
                     game.State = GameState.InProgress;
                 }
 
@@ -73,6 +69,23 @@ public class JudgeAnswer(
         await notificationService.NotifyGameUpdated(result.Code);
 
         return result;
+    }
+
+    private static Guid DetermineNextChoosingPlayer(Game game, Guid preferredPlayerId)
+    {
+        var otherPlayersWithUnansweredClues = game.Players
+            .Where(p => p.Id != preferredPlayerId && p.Category!.Clues.Any(c => !c.IsAnswered))
+            .ToList();
+
+        if (otherPlayersWithUnansweredClues.Count > 0)
+            return preferredPlayerId;
+
+        var otherPlayers = game.Players.Where(p => p.Id != preferredPlayerId).ToList();
+        if (otherPlayers.Count <= 0)
+            return preferredPlayerId;
+
+        var random = new Random();
+        return otherPlayers[random.Next(otherPlayers.Count)].Id;
     }
 }
 

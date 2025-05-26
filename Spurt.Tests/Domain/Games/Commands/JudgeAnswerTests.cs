@@ -375,4 +375,329 @@ public class JudgeAnswerTests
         await _updateGame.Received(1).Execute(Arg.Any<Game>());
         await _notificationService.Received(1).NotifyGameUpdated(Arg.Any<string>());
     }
+
+    [Fact]
+    public async Task Execute_WhenCorrectAnswerAndOtherPlayersHaveClues_BuzzedPlayerBecomesChooser()
+    {
+        // Arrange
+        const string gameCode = "ABCD";
+        var clueOwnerId = Guid.NewGuid();
+        var buzzedPlayerId = Guid.NewGuid();
+        var otherPlayerId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Id = Guid.NewGuid(),
+            Code = gameCode,
+            State = GameState.BuzzerPressed,
+        };
+
+        var buzzedPlayer = new Player
+        {
+            Id = buzzedPlayerId,
+            User = new User { Name = "Buzzed Player" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var buzzedPlayerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Buzzed Player Category",
+            PlayerId = buzzedPlayerId,
+            Player = buzzedPlayer,
+            Clues = [],
+        };
+        buzzedPlayer.Category = buzzedPlayerCategory;
+
+        var clueOwnerPlayer = new Player
+        {
+            Id = clueOwnerId,
+            User = new User { Name = "Clue Owner" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var clueOwnerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Clue Owner Category",
+            PlayerId = clueOwnerId,
+            Player = clueOwnerPlayer,
+            Clues = [],
+        };
+        clueOwnerPlayer.Category = clueOwnerCategory;
+
+        var otherPlayer = new Player
+        {
+            Id = otherPlayerId,
+            User = new User { Name = "Other Player" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var otherPlayerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Other Player Category",
+            PlayerId = otherPlayerId,
+            Player = otherPlayer,
+            Clues = [],
+        };
+        otherPlayer.Category = otherPlayerCategory;
+
+        var clue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 200,
+            Answer = "Test Answer",
+            Question = "Test Question",
+            CategoryId = clueOwnerCategory.Id,
+            Category = clueOwnerCategory,
+        };
+        clueOwnerCategory.Clues = [clue];
+
+        var otherClue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 300,
+            Answer = "Other Answer",
+            Question = "Other Question",
+            CategoryId = otherPlayerCategory.Id,
+            Category = otherPlayerCategory,
+        };
+        otherPlayerCategory.Clues = [otherClue];
+
+        game.Players = [buzzedPlayer, clueOwnerPlayer, otherPlayer];
+        game.SelectedClue = clue;
+        game.SelectedClueId = clue.Id;
+        game.BuzzedPlayerId = buzzedPlayerId;
+        game.BuzzedPlayer = buzzedPlayer;
+        game.BuzzedTime = DateTime.UtcNow;
+
+        _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
+        _updateGame.Execute(Arg.Any<Game>()).Returns(args => (Game)args[0]);
+
+        // Act
+        var result = await _sut.Execute(gameCode, clueOwnerId, true);
+
+        // Assert
+        Assert.Equal(GameState.InProgress, result.State);
+        Assert.Equal(buzzedPlayerId, result.CurrentChoosingPlayerId);
+    }
+
+    [Fact]
+    public async Task Execute_WhenCorrectAnswerAndOnlyBuzzedPlayerHasClues_RandomOtherPlayerBecomesChooser()
+    {
+        // Arrange
+        var gameCode = "ABCD";
+        var clueOwnerId = Guid.NewGuid();
+        var buzzedPlayerId = Guid.NewGuid();
+        var otherPlayerId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Id = Guid.NewGuid(),
+            Code = gameCode,
+            State = GameState.BuzzerPressed,
+        };
+
+        var buzzedPlayer = new Player
+        {
+            Id = buzzedPlayerId,
+            User = new User { Name = "Buzzed Player" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var buzzedPlayerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Buzzed Player Category",
+            PlayerId = buzzedPlayerId,
+            Player = buzzedPlayer,
+            Clues = [],
+        };
+        buzzedPlayer.Category = buzzedPlayerCategory;
+
+        var clueOwnerPlayer = new Player
+        {
+            Id = clueOwnerId,
+            User = new User { Name = "Clue Owner" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var clueOwnerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Clue Owner Category",
+            PlayerId = clueOwnerId,
+            Player = clueOwnerPlayer,
+            Clues = [],
+        };
+        clueOwnerPlayer.Category = clueOwnerCategory;
+
+        var otherPlayer = new Player
+        {
+            Id = otherPlayerId,
+            User = new User { Name = "Other Player" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var otherPlayerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Other Player Category",
+            PlayerId = otherPlayerId,
+            Player = otherPlayer,
+            Clues = [],
+        };
+        otherPlayer.Category = otherPlayerCategory;
+
+        var clue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 200,
+            Answer = "Test Answer",
+            Question = "Test Question",
+            CategoryId = clueOwnerCategory.Id,
+            Category = clueOwnerCategory,
+        };
+        clueOwnerCategory.Clues = [clue];
+
+        // Add an unanswered clue to the buzzed player's category only
+        var buzzedPlayerClue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 300,
+            Answer = "Buzzed Player Answer",
+            Question = "Buzzed Player Question",
+            CategoryId = buzzedPlayerCategory.Id,
+            Category = buzzedPlayerCategory,
+        };
+        buzzedPlayerCategory.Clues = [buzzedPlayerClue];
+
+        // Other player has no clues (all answered/none)
+        otherPlayerCategory.Clues = [];
+
+        game.Players = [buzzedPlayer, clueOwnerPlayer, otherPlayer];
+        game.SelectedClue = clue;
+        game.SelectedClueId = clue.Id;
+        game.BuzzedPlayerId = buzzedPlayerId;
+        game.BuzzedPlayer = buzzedPlayer;
+        game.BuzzedTime = DateTime.UtcNow;
+
+        _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
+        _updateGame.Execute(Arg.Any<Game>()).Returns(args => (Game)args[0]);
+
+        // Act
+        var result = await _sut.Execute(gameCode, clueOwnerId, true);
+
+        // Assert
+        Assert.Equal(GameState.InProgress, result.State);
+        Assert.NotEqual(buzzedPlayerId, result.CurrentChoosingPlayerId);
+        Assert.True(result.CurrentChoosingPlayerId == clueOwnerId || result.CurrentChoosingPlayerId == otherPlayerId);
+    }
+
+    [Fact]
+    public async Task Execute_WhenCorrectAnswerAndOnlyTwoPlayers_BuzzedPlayerBecomesChooserDespiteOnlyHavingOwnClues()
+    {
+        // Arrange
+        const string gameCode = "ABCD";
+        var clueOwnerId = Guid.NewGuid();
+        var buzzedPlayerId = Guid.NewGuid();
+
+        var game = new Game
+        {
+            Id = Guid.NewGuid(),
+            Code = gameCode,
+            State = GameState.BuzzerPressed,
+        };
+
+        var buzzedPlayer = new Player
+        {
+            Id = buzzedPlayerId,
+            User = new User { Name = "Buzzed Player" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var buzzedPlayerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Buzzed Player Category",
+            PlayerId = buzzedPlayerId,
+            Player = buzzedPlayer,
+            Clues = [],
+        };
+        buzzedPlayer.Category = buzzedPlayerCategory;
+
+        var clueOwnerPlayer = new Player
+        {
+            Id = clueOwnerId,
+            User = new User { Name = "Clue Owner" },
+            UserId = Guid.NewGuid(),
+            Game = game,
+            GameId = game.Id,
+            AnsweredClues = [],
+        };
+        var clueOwnerCategory = new Category
+        {
+            Id = Guid.NewGuid(),
+            Title = "Clue Owner Category",
+            PlayerId = clueOwnerId,
+            Player = clueOwnerPlayer,
+            Clues = [],
+        };
+        clueOwnerPlayer.Category = clueOwnerCategory;
+
+        var clue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 200,
+            Answer = "Test Answer",
+            Question = "Test Question",
+            CategoryId = clueOwnerCategory.Id,
+            Category = clueOwnerCategory,
+        };
+        clueOwnerCategory.Clues = [clue];
+
+        // Add an unanswered clue to the buzzed player's category only
+        var buzzedPlayerClue = new Clue
+        {
+            Id = Guid.NewGuid(),
+            PointValue = 300,
+            Answer = "Buzzed Player Answer",
+            Question = "Buzzed Player Question",
+            CategoryId = buzzedPlayerCategory.Id,
+            Category = buzzedPlayerCategory,
+        };
+        buzzedPlayerCategory.Clues = [buzzedPlayerClue];
+
+        game.Players = [buzzedPlayer, clueOwnerPlayer];
+        game.SelectedClue = clue;
+        game.SelectedClueId = clue.Id;
+        game.BuzzedPlayerId = buzzedPlayerId;
+        game.BuzzedPlayer = buzzedPlayer;
+        game.BuzzedTime = DateTime.UtcNow;
+
+        _getGame.Execute(gameCode, Arg.Any<bool>()).Returns(game);
+        _updateGame.Execute(Arg.Any<Game>()).Returns(args => (Game)args[0]);
+
+        // Act
+        var result = await _sut.Execute(gameCode, clueOwnerId, true);
+
+        // Assert
+        Assert.Equal(GameState.InProgress, result.State);
+        Assert.Equal(clueOwnerId, result.CurrentChoosingPlayerId); // Should choose the other player
+    }
 }
