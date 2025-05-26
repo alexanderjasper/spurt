@@ -19,6 +19,12 @@ public class CreateGameTests
     {
         _user = new User { Id = _userId, Name = _username };
         _addGame = Substitute.For<IAddGame>();
+        _addGame.Execute(Arg.Any<Game>()).Returns(callInfo =>
+        {
+            var game = callInfo.Arg<Game>();
+            game.Id = Guid.NewGuid(); // Simulate database setting the ID
+            return game;
+        });
         var getUser = Substitute.For<IGetUser>();
         getUser.Execute(_userId).Returns(_user);
         _createGame = new CreateGame(_addGame, getUser);
