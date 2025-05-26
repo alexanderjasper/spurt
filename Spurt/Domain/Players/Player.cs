@@ -17,6 +17,6 @@ public class Player
 
     public int GetScore()
     {
-        return AnsweredClues.Sum(c => c.PointValue);
+        return AnsweredClues.Sum(c => c.NoOneCouldAnswer ? -c.PointValue : c.PointValue);
     }
 }

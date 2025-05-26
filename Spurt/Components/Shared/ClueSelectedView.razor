@@ -17,5 +17,10 @@
     else if (isClueOwner)
     {
         <div class="info-message">Dette er din ledetråd. Vent på at andre spillere svarer.</div>
+        <div class="clue-owner-actions">
+            <button class="btn btn-warning" @onclick="OnNoOneCanAnswer">
+                Æd den selv (ingen kan svare)
+            </button>
+        </div>
     }
 </div> 

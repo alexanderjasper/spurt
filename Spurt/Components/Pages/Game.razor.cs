@@ -9,7 +9,6 @@ using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
-// TODO: Add negative scoring if no one can answer the question
 // TODO: Add an option to leave the game (confirmation dialog)
 // TODO: Add an option to kick a player. Confirmation dialog. Perhaps all should agree? If multiple players are kicked, only users not up for kicking have to agree.
 // TODO: Handle disconnected players? Auto-skip turn?

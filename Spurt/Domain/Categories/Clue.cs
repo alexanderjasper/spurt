@@ -11,6 +11,7 @@ public class Clue
     public bool IsAnswered => AnsweredByPlayerId != null;
     public Guid? AnsweredByPlayerId { get; set; }
     public Player? AnsweredByPlayer { get; set; }
+    public bool NoOneCouldAnswer { get; set; }
     public required Guid CategoryId { get; set; }
     public required Category Category { get; set; }
 }

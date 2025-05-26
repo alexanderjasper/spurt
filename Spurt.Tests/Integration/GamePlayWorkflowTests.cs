@@ -303,4 +303,41 @@ public class GamePlayWorkflowTests
         // Since other players still have clues, player3 (who answered correctly) should become chooser
         Assert.Equal(player3.Id, game.CurrentChoosingPlayerId);
     }
+
+    [Fact]
+    public async Task GamePlayWorkflow_NoOneCanAnswer_ClueOwnerGetsPenalty()
+    {
+        using var testEnv = _fixture.CreateTestEnvironment();
+        var helper = new IntegrationTestHelper(testEnv);
+        var game = await helper.CreateGame(3);
+        var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
+        var selectClue = testEnv.ServiceProvider.GetRequiredService<SelectClue>();
+        var noOneCanAnswer = testEnv.ServiceProvider.GetRequiredService<INoOneCanAnswer>();
+        var player1 = game.Players.Single(p => p.IsCreator);
+        var player2 = game.Players.First(p => !p.IsCreator);
+        var player3 = game.Players.Single(p => p.Id != player1.Id && p.Id != player2.Id);
+
+        // Start the game
+        game = await startGame.Execute(game.Code, player1.UserId);
+
+        // Select a clue from player2's category (200 points)
+        var clue = player2.Category!.Clues.First(c => c.PointValue == 200);
+        game = await selectClue.Execute(game.Code, clue.Id);
+
+        // Player2 (clue owner) decides no one can answer
+        game = await noOneCanAnswer.Execute(game.Code, player2.Id);
+
+        // Verify the clue is marked as unanswered and penalty is applied
+        Assert.True(clue.NoOneCouldAnswer);
+        Assert.Equal(player2.Id, clue.AnsweredByPlayerId);
+        Assert.Equal(-200, player2.GetScore()); // Penalty points
+        Assert.Equal(GameState.InProgress, game.State);
+        Assert.Null(game.SelectedClue);
+
+        // Verify other players were not affected
+        Assert.Equal(0, player1.GetScore());
+        Assert.Equal(0, player3.GetScore());
+        // Game should have moved to another player for choosing
+        Assert.NotEqual(player2.Id, game.CurrentChoosingPlayerId);
+    }
 }
