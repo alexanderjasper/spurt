@@ -23,7 +23,7 @@
             <p class="your-turn">Det er din tur til at vælge en kategori og pointværdi!</p>
 
             <GameBoard
-                Categories="Game.Players.Select(p => p.Category!)"
+                Categories="Game.Players.Where(p => p.Id != Game.CurrentChoosingPlayerId).Select(p => p.Category!)"
                 OnClueSelected="OnClueSelected"/>
         </div>
     }

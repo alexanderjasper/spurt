@@ -9,7 +9,6 @@ using Spurt.Domain.Players;
 
 namespace Spurt.Components.Pages;
 
-// TODO: Players should not be able to chooes clues from their own category
 // TODO: If choosing player is the only one with remaining clues, let another player choose a clue
 // TODO: Add negative scoring if no one can answer the question
 // TODO: Add an option to leave the game (confirmation dialog)
