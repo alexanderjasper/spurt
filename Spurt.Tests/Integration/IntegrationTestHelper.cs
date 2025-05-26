@@ -20,7 +20,7 @@ public class IntegrationTestHelper(TestDbContextFixture.TestEnvironment testEnv)
         var joinGame = testEnv.ServiceProvider.GetRequiredService<JoinGame>();
         var saveCategory = testEnv.ServiceProvider.GetRequiredService<ISaveCategory>();
 
-        // Step 1: Set up a game
+        // 1: Set up a game
         var users = new List<User>();
         for (var i = 0; i < numberOfPlayers; i++)
         {
@@ -29,28 +29,31 @@ public class IntegrationTestHelper(TestDbContextFixture.TestEnvironment testEnv)
         }
 
         var game = await createGame.Execute(users[0].Id);
+
+        // 2: Create categories for each player
         for (var i = 0; i < numberOfPlayers; i++)
         {
-            if (i > 0) game = await joinGame.Execute(game.Code, users[i].Id);
+            if (i > 0)
+                game = await joinGame.Execute(game.Code, users[i].Id);
 
             var player = game.Players.Single(p => p.UserId == users[i].Id);
-            var category = new Category
+            player.Category = new Category
             {
-                Title = "",
-                PlayerId = player.Id,
                 Player = player,
+                PlayerId = player.Id,
+                Title = $"Test Category {i + 1}",
                 Clues = [],
             };
             foreach (var pointValue in new[] { 100, 200, 300, 400, 500 })
-                category.Clues.Add(new Clue
+                player.Category.Clues.Add(new Clue
                 {
-                    Answer = "",
-                    Question = "",
+                    Question = $"Question for {pointValue}",
+                    Answer = $"Answer for {pointValue}",
                     PointValue = pointValue,
-                    CategoryId = category.Id,
-                    Category = category,
+                    CategoryId = player.Category.Id,
+                    Category = player.Category,
                 });
-            await saveCategory.Execute(category, true);
+            await saveCategory.Execute(player.Category, true);
         }
 
         return game;

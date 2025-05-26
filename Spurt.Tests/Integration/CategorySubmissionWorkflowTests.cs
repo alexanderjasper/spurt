@@ -14,7 +14,6 @@ public class CategorySubmissionWorkflowTests
     [Fact]
     public async Task CategorySubmission_ThenStartGame_Success()
     {
-        // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
         var helper = new IntegrationTestHelper(testEnv);
         var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
@@ -31,178 +30,152 @@ public class CategorySubmissionWorkflowTests
     [Fact]
     public async Task CategorySubmission_NotAllCategoriesSubmitted_CannotStartGame()
     {
-        // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-
-        // Get real implementations from the test environment's service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var joinGame = testEnv.ServiceProvider.GetRequiredService<JoinGame>();
         var saveCategory = testEnv.ServiceProvider.GetRequiredService<ISaveCategory>();
         var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
 
-        // Step 1: Set up a game with two players
+        // Set up a game with two players
         var user = await registerUser.Execute("Creator");
         var user2 = await registerUser.Execute("Player 2");
         var game = await createGame.Execute(user.Id);
         var player = game.Players.Single();
         game = await joinGame.Execute(game.Code, user2.Id);
         var player2 = game.Players.Single(x => x.UserId == user2.Id);
-
-        // Step 2: Only the creator submits a category
-        var category1 = new Category
+        player.Category = new Category
         {
-            Title = "",
-            PlayerId = player.Id,
-            Clues = [],
             Player = player,
+            PlayerId = player.Id,
+            Title = "Test Category",
+            Clues = [],
         };
         foreach (var pointValue in new[] { 100, 200, 300, 400, 500 })
-            category1.Clues.Add(new Clue
+            player.Category.Clues.Add(new Clue
             {
-                Answer = "",
-                Question = "",
+                Question = $"Question for {pointValue}",
+                Answer = $"Answer for {pointValue}",
                 PointValue = pointValue,
-                CategoryId = category1.Id,
-                Category = category1,
+                CategoryId = player.Category.Id,
+                Category = player.Category,
             });
-        await saveCategory.Execute(category1, true);
+        await saveCategory.Execute(player.Category, true);
 
-        // Step 3: Try to start the game, should fail
+        // Try to start the game, should fail
         var exception =
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await startGame.Execute(game.Code, user.Id));
-
         Assert.Contains("All players must submit", exception.Message);
     }
 
     [Fact]
     public async Task CategorySubmission_NotEnoughPlayers_CannotStartGame()
     {
-        // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-
-        // Get real implementations from the test environment's service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var saveCategory = testEnv.ServiceProvider.GetRequiredService<ISaveCategory>();
         var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
 
-        // Step 1: Set up a game with only one player
+        // Set up a game with only one player
         var user = await registerUser.Execute("Creator");
         var game = await createGame.Execute(user.Id);
         var player = game.Players.Single();
-
-        // Step 2: Creator submits a category
-        var category1 = new Category
+        player.Category = new Category
         {
-            Title = "",
-            PlayerId = player.Id,
-            Clues = [],
             Player = player,
+            PlayerId = player.Id,
+            Title = "Test Category",
+            Clues = [],
         };
         foreach (var pointValue in new[] { 100, 200, 300, 400, 500 })
-            category1.Clues.Add(new Clue
+            player.Category.Clues.Add(new Clue
             {
-                Answer = "",
-                Question = "",
+                Question = $"Question for {pointValue}",
+                Answer = $"Answer for {pointValue}",
                 PointValue = pointValue,
-                CategoryId = category1.Id,
-                Category = category1,
+                CategoryId = player.Category.Id,
+                Category = player.Category,
             });
-        await saveCategory.Execute(category1, true);
+        await saveCategory.Execute(player.Category, true);
 
-        // Step 3: Try to start the game, should fail
+        // Try to start the game, should fail
         var exception =
             await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                 await startGame.Execute(game.Code, user.Id));
-
         Assert.Contains("At least", exception.Message);
     }
 
     [Fact]
     public async Task CategorySubmission_InsufficientClues_CannotSubmit()
     {
-        // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-
-        // Get real implementations from the test environment's service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var saveCategory = testEnv.ServiceProvider.GetRequiredService<ISaveCategory>();
-        var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
-
-        // Step 1: Set up a game with only one player
         var user = await registerUser.Execute("Creator");
         var game = await createGame.Execute(user.Id);
         var player = game.Players.Single();
 
-        // Step 2: Creator submits a category
-        var category1 = new Category
+        // Try to create a category with insufficient clues (following real workflow)
+        player.Category = new Category
         {
-            Title = "",
-            PlayerId = player.Id,
-            Clues = [],
             Player = player,
+            PlayerId = player.Id,
+            Title = "Test Category",
+            Clues = [],
         };
         foreach (var pointValue in new[] { 100, 200, 300, 400 })
-            category1.Clues.Add(new Clue
+            player.Category.Clues.Add(new Clue
             {
-                Answer = "",
-                Question = "",
+                Question = $"Question for {pointValue}",
+                Answer = $"Answer for {pointValue}",
                 PointValue = pointValue,
-                CategoryId = category1.Id,
-                Category = category1,
+                CategoryId = player.Category.Id,
+                Category = player.Category,
             });
 
-        // Step 3: Try to submit, should fail with ArgumentException since validation happens before database access
+        // Try to submit, should fail
         var exception =
             await Assert.ThrowsAsync<ArgumentException>(async () =>
-                await saveCategory.Execute(category1, true));
-
+                await saveCategory.Execute(player.Category, true));
         Assert.Contains("must have exactly 5 clues", exception.Message);
     }
 
     [Fact]
     public async Task CategorySubmission_InvalidPointValues_CannotSubmit()
     {
-        // Create a fresh test environment for this test
         using var testEnv = _fixture.CreateTestEnvironment();
-
-        // Get real implementations from the test environment's service provider
         var registerUser = testEnv.ServiceProvider.GetRequiredService<RegisterUser>();
         var createGame = testEnv.ServiceProvider.GetRequiredService<CreateGame>();
         var saveCategory = testEnv.ServiceProvider.GetRequiredService<ISaveCategory>();
-        var startGame = testEnv.ServiceProvider.GetRequiredService<StartGame>();
 
-        // Step 1: Set up a game with only one player
+        // Set up a game with only one player. Fill invalid point values in the category
         var user = await registerUser.Execute("Creator");
         var game = await createGame.Execute(user.Id);
         var player = game.Players.Single();
-
-        // Step 2: Creator submits a category
-        var category1 = new Category
+        player.Category = new Category
         {
-            Title = "",
-            PlayerId = player.Id,
-            Clues = [],
             Player = player,
+            PlayerId = player.Id,
+            Title = "Test Category",
+            Clues = [],
         };
         foreach (var pointValue in new[] { 100, 250, 300, 400, 500 })
-            category1.Clues.Add(new Clue
+            player.Category.Clues.Add(new Clue
             {
-                Answer = "",
-                Question = "",
+                Question = $"Question for {pointValue}",
+                Answer = $"Answer for {pointValue}",
                 PointValue = pointValue,
-                CategoryId = category1.Id,
-                Category = category1,
+                CategoryId = player.Category.Id,
+                Category = player.Category,
             });
 
-        // Step 3: Try to submit, should fail with ArgumentException since validation happens before database access
+        // Try to submit, should fail with ArgumentException since validation happens before database access
         var exception =
             await Assert.ThrowsAsync<ArgumentException>(async () =>
-                await saveCategory.Execute(category1, true));
-
+                await saveCategory.Execute(player.Category, true));
         Assert.Contains("Clue point values must be 100, 200, 300", exception.Message);
     }
 }
