@@ -2,42 +2,42 @@
 @if (CurrentPlayer != null)
 {
     <PlayerList Players="Game.Players"/>
-    <div>
+    <div class="waiting-content">
         @if (CurrentPlayer.IsCreator && Game.AllPlayersSubmittedCategories())
         {
-            <div>
+            <div class="pub-text-center">
                 @if (Game.Players.Count < 2)
                 {
-                    <div class="alert alert-warning">
-                        <p>Mindst 2 spillere er påkrævet for at starte spillet. Inviter flere spillere til at
-                            deltage.</p>
+                    <div class="alert alert-warning pub-alert">
+                        <p>Mindst 2 spillere er påkrævet for at starte spillet. Inviter flere spillere til at deltage.</p>
                     </div>
                 }
                 else
                 {
-                    <h3>Alle spillere har indsendt deres kategorier!</h3>
-                    <button @onclick="OnStartGame" class="btn btn-large">Start spillet</button>
+                    <h3 class="pub-heading">Alle spillere har indsendt deres kategorier!</h3>
+                    <button @onclick="OnStartGame" class="pub-btn-large">Start spillet</button>
                 }
             </div>
         }
         else if (Game.AllPlayersSubmittedCategories())
         {
-            <div>
-                <h3>Alle spillere har indsendt deres kategorier!</h3>
-                <p>Venter på at værten starter spillet...</p>
+            <div class="pub-text-center">
+                <h3 class="pub-heading">Alle spillere har indsendt deres kategorier!</h3>
+                <p class="pub-status-text">Venter på at værten starter spillet...</p>
             </div>
         }
         else
         {
-            <div>
-                <h3>Din kategori</h3>
+            <div class="category-section">
                 @if (CurrentPlayer.Category?.IsSubmitted ?? false)
                 {
-                    <p>Din kategori er indsendt!</p>
+                    <p class="pub-status-text submitted-status">Din kategori er indsendt!</p>
                 }
                 else
                 {
-                    <CategoryEditor CurrentPlayer="@CurrentPlayer"/>
+                    <div class="category-editor-wrapper">
+                        <CategoryEditor CurrentPlayer="@CurrentPlayer"/>
+                    </div>
                 }
             </div>
         }

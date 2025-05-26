@@ -1,50 +1,8 @@
-h1 {
-    font-size: 3rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
+/* RegisterUser Component Specific Styles */
 
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-input {
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 0.8rem 1rem;
-    border-radius: 4px;
-    font-size: 1.2rem;
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.5rem;
-    }
-
-    form {
-        padding: 1.5rem;
-        width: 90%;
-    }
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
+/* Center form actions */
 .form-actions {
-    margin-top: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+    position: relative;
 } 

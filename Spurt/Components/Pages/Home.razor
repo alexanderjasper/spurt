@@ -4,30 +4,28 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="page-container">
-    <div class="container-sm">
-        @if (CurrentUser != null)
-        {
-            <div class="actions">
-                @if (IsLoading)
-                {
-                    <LoadingIndicator/>
-                }
-                else
-                {
-                    <div class="text-center">
-                        <button @onclick="CreateNewGame" class="btn btn-large">Opret Nyt Spil</button>
-                    </div>
+<PubContainer>
+    @if (CurrentUser != null)
+    {
+        <div class="pub-actions">
+            @if (IsLoading)
+            {
+                <LoadingIndicator/>
+            }
+            else
+            {
+                <div class="pub-text-center">
+                    <button @onclick="CreateNewGame" class="pub-btn-large">Opret Nyt Spil</button>
+                </div>
 
-                    <div class="text-center">
-                        <h3>Eller deltag i et eksisterende spil</h3>
-                        <div class="flex-container flex-column flex-center">
-                            <input @bind="GameCode" placeholder="Indtast spilkode" class="input"/>
-                            <button @onclick="JoinGame" class="btn">Deltag</button>
-                        </div>
+                <div class="pub-text-center">
+                    <h3 class="pub-heading">Eller deltag i et eksisterende spil</h3>
+                    <div class="pub-flex-container flex-column flex-center">
+                        <input @bind="GameCode" placeholder="Indtast spilkode" class="pub-input"/>
+                        <button @onclick="JoinGame" class="pub-btn">Deltag</button>
                     </div>
-                }
-            </div>
-        }
-    </div>
-</div>
+                </div>
+            }
+        </div>
+    }
+</PubContainer>

@@ -1,25 +1,22 @@
-h1 {
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-    letter-spacing: 2px;
-    text-align: center;
-    width: 100%;
+/* Game Component Specific Styles */
+
+/* Game container - wider for game content */
+.game-container {
+    max-width: 800px;
 }
 
-p {
-    font-size: 1.4rem;
-    margin-bottom: 2rem;
-    text-align: center;
-    width: 100%;
-}
-
+/* Game code styling */
 .game-code {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
     display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.3rem 0.8rem;
-    border-radius: 4px;
+    background: rgba(255, 215, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    border: 2px solid #FFD700;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     max-width: fit-content;
 }
 
@@ -50,18 +47,23 @@ p {
     border-radius: 8px;
 }
 
-/* Mobile adjustments */
+/* Mobile adjustments - more compact */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 2.2rem;
-    }
-
     .game-code {
-        font-size: 1.1rem;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+        padding: 0.3rem 0.8rem;
     }
 
     ::deep .selected-clue {
         width: 95%;
+        padding: 0.3rem;
+        margin: 0.5rem auto;
+    }
+    
+    /* Make game container more compact on mobile */
+    .game-container {
         padding: 0.5rem;
     }
 } 

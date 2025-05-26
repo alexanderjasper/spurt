@@ -1,0 +1,10 @@
+@* Reusable Pub-themed Page Wrapper - No Container Boxes *@
+
+<div class="pub-page-wrapper @ContainerClass">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+    [Parameter] public string ContainerClass { get; set; } = string.Empty;
+} 

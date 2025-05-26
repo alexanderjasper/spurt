@@ -1,17 +1,18 @@
 @page "/register"
+@using Spurt.Components.Shared
 @rendermode InteractiveServer
 
 <PageTitle>Spur't | Registrer</PageTitle>
 
-<div class="page-container">
+<PubContainer>
     <EditForm Model="Model" OnValidSubmit="Submit">
-        <div class="form-group">
-            <label for="userName">Dit navn</label>
-            <InputText id="userName" @bind-Value="Model!.Name"/>
+        <div class="pub-form-group">
+            <label for="userName" class="pub-label">Hvad hedder du?</label>
+            <InputText id="userName" @bind-Value="Model!.Name" placeholder="Navn, tak..." class="pub-input"/>
         </div>
         <div class="form-actions">
-            <button type="submit">Registrer</button>
+            <button type="submit" class="pub-btn">Lad os gøre det!</button>
         </div>
     </EditForm>
-</div>
+</PubContainer>
 

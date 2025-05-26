@@ -5,53 +5,55 @@
 
 <PageTitle>Spur't | Spil</PageTitle>
 
-<div class="text-center">
-    <h1 class="game-code">@Code</h1>
-</div>
-
-@if (CurrentGame != null)
-{
-    <div>
-        @switch (CurrentGame.State)
-        {
-            case GameState.WaitingForCategories:
-                <GameWaitingForCategoriesView
-                    Game="CurrentGame"
-                    CurrentPlayer="_currentPlayer"
-                    OnStartGame="StartGame"/>
-                break;
-
-            case GameState.InProgress:
-                <GameInProgressView
-                    Game="CurrentGame"
-                    CurrentPlayer="_currentPlayer"
-                    OnClueSelected="SelectClue"/>
-                break;
-
-            case GameState.ClueSelected:
-                <ClueSelectedView
-                    Game="CurrentGame"
-                    CurrentPlayer="_currentPlayer"
-                    OnBuzz="PressBuzz"/>
-                break;
-
-            case GameState.BuzzerPressed:
-                <BuzzerPressedView
-                    Game="CurrentGame"
-                    CurrentPlayer="_currentPlayer"/>
-                break;
-
-            case GameState.Finished:
-                <GameFinishedView
-                    Game="CurrentGame"
-                    CurrentPlayer="_currentPlayer"/>
-                break;
-        }
+<div class="pub-page-wrapper game-container">
+    <div class="pub-text-center">
+        <h1 class="game-code pub-heading">@Code</h1>
     </div>
-}
-else
-{
-    <LoadingIndicator/>
-}
+
+    @if (CurrentGame != null)
+    {
+        <div>
+            @switch (CurrentGame.State)
+            {
+                case GameState.WaitingForCategories:
+                    <GameWaitingForCategoriesView
+                        Game="CurrentGame"
+                        CurrentPlayer="_currentPlayer"
+                        OnStartGame="StartGame"/>
+                    break;
+
+                case GameState.InProgress:
+                    <GameInProgressView
+                        Game="CurrentGame"
+                        CurrentPlayer="_currentPlayer"
+                        OnClueSelected="SelectClue"/>
+                    break;
+
+                case GameState.ClueSelected:
+                    <ClueSelectedView
+                        Game="CurrentGame"
+                        CurrentPlayer="_currentPlayer"
+                        OnBuzz="PressBuzz"/>
+                    break;
+
+                case GameState.BuzzerPressed:
+                    <BuzzerPressedView
+                        Game="CurrentGame"
+                        CurrentPlayer="_currentPlayer"/>
+                    break;
+
+                case GameState.Finished:
+                    <GameFinishedView
+                        Game="CurrentGame"
+                        CurrentPlayer="_currentPlayer"/>
+                    break;
+            }
+        </div>
+    }
+    else
+    {
+        <LoadingIndicator/>
+    }
+</div>
 
  

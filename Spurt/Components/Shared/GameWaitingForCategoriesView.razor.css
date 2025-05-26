@@ -2,12 +2,12 @@ div {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1rem auto;
+    margin: 0.5rem auto;
     max-width: 800px;
 }
 
 h3 {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     text-align: center;
 }
 
@@ -30,7 +30,136 @@ h3 {
 
 @media (max-width: 768px) {
     .alert {
-        padding: 0.8rem;
+        padding: 0.6rem;
+        margin: 0.6rem 0;
+    }
+    
+    .alert p {
+        font-size: 1rem;
+    }
+}
+
+/* GameWaitingForCategoriesView Specific Styles */
+
+/* Content wrapper */
+.waiting-content {
+    margin-top: 1rem;
+}
+
+/* Status text styling */
+.pub-status-text {
+    color: #FFFACD;
+    font-size: 1.1rem;
+    margin: 0.8rem 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Alert styling */
+.pub-alert {
+    background: rgba(255, 193, 7, 0.2);
+    border: 2px solid #FFD700;
+    border-radius: 15px;
+    padding: 0.8rem;
+    margin: 0.8rem 0;
+    color: #FFFACD;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    animation: gentle-alert-float 6s ease-in-out infinite;
+    transform: perspective(300px) rotateX(2deg) rotateY(-1deg);
+}
+
+/* Category section - no container box */
+.category-section {
+    margin-top: 1.5rem;
+    /* No background, border, or padding - elements directly on background */
+}
+
+.category-heading {
+    /* Reduce wobble for category section */
+    animation: gentle-wobble 8s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+/* Category editor wrapper - calm styling */
+.category-editor-wrapper {
+    /* No sway animation for form area */
+    animation: none;
+}
+
+/* Override form animations in category editor */
+.category-editor-wrapper ::deep .pub-input,
+.category-editor-wrapper ::deep input {
+    /* Reduce perspective transform for better usability */
+    transform: perspective(100px) rotateX(2deg);
+    transition: transform 0.1s ease, border-color 0.2s ease;
+}
+
+.category-editor-wrapper ::deep .pub-input:focus,
+.category-editor-wrapper ::deep input:focus {
+    /* Gentler focus effect */
+    transform: perspective(100px) rotateX(0deg) scale(1.02);
+    animation: none;
+    box-shadow: 
+        inset 0 0 15px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+/* Submitted status styling */
+.submitted-status {
+    color: #90EE90;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Gentle wobble animation for category heading */
+@keyframes gentle-wobble {
+    0%, 100% { transform: skew(0deg, 0deg) rotate(0deg); }
+    50% { transform: skew(1deg, -1deg) rotate(1deg); }
+}
+
+/* Gentle float animation for alerts */
+@keyframes gentle-alert-float {
+    0% { transform: perspective(300px) rotateX(2deg) rotateY(-1deg) translateY(0px); }
+    50% { transform: perspective(300px) rotateX(3deg) rotateY(0.5deg) translateY(-2px); }
+    100% { transform: perspective(300px) rotateX(2deg) rotateY(-1deg) translateY(0px); }
+}
+
+/* Media queries - more compact for mobile */
+@media (max-width: 768px) {
+    div {
+        margin: 0.3rem auto;
+    }
+    
+    h3 {
         margin: 0.8rem 0;
+        font-size: 1.3rem;
+    }
+    
+    .waiting-content {
+        margin-top: 0.8rem;
+    }
+    
+    .category-section {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .category-heading {
+        margin-bottom: 0.8rem;
+        font-size: 1.2rem;
+    }
+    
+    .pub-status-text {
+        font-size: 1rem;
+        margin: 0.6rem 0;
+    }
+    
+    .submitted-status {
+        font-size: 1.1rem;
+    }
+    
+    .pub-alert {
+        padding: 0.6rem;
+        margin: 0.6rem 0;
     }
 } 

@@ -1,37 +1,37 @@
-<div>
-    <h3>@(IsEditing ? "Rediger kategori" : "Opret kategori")</h3>
+<div class="category-editor">
+    <h3 class="category-title">@(IsEditing ? "Rediger kategori" : "Opret kategori")</h3>
 
-    <div>
-        <label for="categoryTitle">Kategorinavn</label>
-        <input id="categoryTitle" @bind="Form.Title"/>
+    <div class="form-group-calm">
+        <label for="categoryTitle" class="category-label">Kategorinavn</label>
+        <input id="categoryTitle" @bind="Form.Title" class="category-input"/>
     </div>
 
-    <h4>Spørgsmål</h4>
-    <p>Opret 5 spørgsmål med pointværdier fra 100 til 500.</p>
+    <h4 class="questions-heading">Spørgsmål</h4>
+    <p class="questions-description">Opret 5 spørgsmål med pointværdier fra 100 til 500.</p>
 
     @foreach (var pointValue in new[] { 100, 200, 300, 400, 500 })
     {
         var index = PointValueToIndex(pointValue);
         EnsureClueExists(pointValue);
 
-        <div>
-            <h5>@pointValue point</h5>
-            <div>
-                <div>
-                    <label>Svar (vises til spillerne)</label>
-                    <input @bind="@Form.Clues[index].Answer" @bind:event="oninput"/>
+        <div class="clue-section">
+            <h5 class="point-value">@pointValue point</h5>
+            <div class="clue-inputs">
+                <div class="input-group-calm">
+                    <label class="input-label-calm">Svar (vises til spillerne)</label>
+                    <textarea @bind="@Form.Clues[index].Answer" @bind:event="oninput" class="category-textarea" rows="3" placeholder="Skriv svaret her..."></textarea>
                 </div>
-                <div>
-                    <label>Spørgsmål (hvad spillerne skal svare)</label>
-                    <input @bind="@Form.Clues[index].Question" @bind:event="oninput"/>
+                <div class="input-group-calm">
+                    <label class="input-label-calm">Spørgsmål (hvad spillerne skal svare)</label>
+                    <textarea @bind="@Form.Clues[index].Question" @bind:event="oninput" class="category-textarea" rows="3" placeholder="Skriv spørgsmålet her..."></textarea>
                 </div>
             </div>
         </div>
     }
 
-    <div>
-        <button @onclick="SaveDraft" class="btn">Gem kladde</button>
-        <button @onclick="Submit" class="btn btn-primary"
+    <div class="category-actions">
+        <button @onclick="SaveDraft" class="category-btn category-btn-draft">Gem kladde</button>
+        <button @onclick="Submit" class="category-btn category-btn-submit"
                 disabled="@(!IsValid)">Indsend kategori
         </button>
     </div>
